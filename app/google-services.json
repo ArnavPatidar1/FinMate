@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "260847739624",
+    "project_id": "finmate-63ac8",
+    "storage_bucket": "finmate-63ac8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:260847739624:android:2c6e194e3cd01958addf5d",
+        "android_client_info": {
+          "package_name": "arnav.example.finmate"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAq6zE-k45TisukwS0zHgeUAnEDzUW8d5w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
