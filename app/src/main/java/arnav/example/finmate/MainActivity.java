@@ -1,11 +1,13 @@
 package arnav.example.finmate;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -34,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
     EditText editTextPhone, editTextOtp, editTextName, editTextEmail;
     Button buttonSendOtp, buttonVerifyOtp;
+    TextView txtLoginTitle;
     String verificationId;
     FirebaseAuth mAuth;
     FirebaseFirestore db;
@@ -57,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         editTextEmail = findViewById(R.id.editTextEmail);
         buttonSendOtp = findViewById(R.id.buttonSendOtp);
         buttonVerifyOtp = findViewById(R.id.buttonVerifyOtp);
+        txtLoginTitle = findViewById(R.id.txtLoginTitle);
 
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
@@ -74,9 +78,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void sendOtp() {
+        String name = editTextName.getText().toString().trim();
+        String email = editTextEmail.getText().toString().trim();
         String phone = editTextPhone.getText().toString().trim();
-        if (phone.isEmpty()) {
-            editTextPhone.setError("Enter phone number");
+        if (phone.isEmpty() || name.isEmpty() || email.isEmpty()) {
+            editTextPhone.setError("Please, Enter All Fields");
             return;
         }
 
@@ -106,13 +112,17 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
+        @SuppressLint("SetTextI18n")
         @Override
         public void onCodeSent(@NonNull String id, @NonNull PhoneAuthProvider.ForceResendingToken token) {
             verificationId = id;
 
+            editTextName.setVisibility(View.GONE);
+            editTextEmail.setVisibility(View.GONE);
+            editTextPhone.setVisibility(View.GONE);
+            buttonSendOtp.setVisibility(View.GONE);
+            txtLoginTitle.setText("Verify OTP...");
             editTextOtp.setVisibility(View.VISIBLE);
-            editTextName.setVisibility(View.VISIBLE);
-            editTextEmail.setVisibility(View.VISIBLE);
             buttonVerifyOtp.setVisibility(View.VISIBLE);
 
             Toast.makeText(MainActivity.this, "OTP Sent!", Toast.LENGTH_SHORT).show();
