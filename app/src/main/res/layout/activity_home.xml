@@ -1,35 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:padding="24dp"
-    android:orientation="vertical"
-    android:gravity="center"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".HomeActivity">
 
-    <!-- Welcome Text -->
-    <TextView
-        android:id="@+id/textViewWelcome"
-        android:text="Welcome!"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="20dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:id="@+id/container"
+        app:layout_constraintBottom_toTopOf="@+id/navBar"
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
-    <!-- Message / Task -->
-    <TextView
-        android:id="@+id/textViewMessage"
-        android:text="You're already registered."
-        android:layout_marginBottom="30dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <com.nafis.bottomnavigation.NafisBottomNavigation
+        android:id="@+id/navBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:mbn_circleColor="@color/sky_blue"
+        app:mbn_backgroundBottomColor="@color/sky_blue"
+        app:mbn_countTextColor="@color/white"
+        app:mbn_defaultIconColor="@color/white"
+        app:mbn_rippleColor="#2f424242"
+        app:mbn_selectedIconColor="@color/white"
+        app:mbn_shadowColor="#1f212121"
 
-    <!-- Logout Button -->
-    <Button
-        android:id="@+id/buttonLogout"
-        android:text="Logout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        />
 
-</LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
