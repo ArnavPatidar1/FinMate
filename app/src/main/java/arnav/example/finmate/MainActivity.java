@@ -53,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        // UI Init
         editTextPhone = findViewById(R.id.editTextPhone);
         editTextOtp = findViewById(R.id.editTextOtp);
         editTextName = findViewById(R.id.editTextName);

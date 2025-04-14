@@ -13,9 +13,9 @@
     <androidx.cardview.widget.CardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:elevation="10dp"
+        android:elevation="@dimen/_10sdp"
         app:cardBackgroundColor="@color/green"
-        app:cardCornerRadius="10dp"
+        app:cardCornerRadius="@dimen/_10sdp"
         app:cardUseCompatPadding="true">
 
         <LinearLayout
@@ -29,53 +29,58 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_margin="10dp"
                 android:text="@string/login"
                 android:textColor="@color/white"
-                android:textSize="32sp"
+                android:textSize="@dimen/_28ssp"
                 android:textStyle="bold" />
 
 
             <EditText
                 android:id="@+id/editTextName"
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_margin="10dp"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_margin="@dimen/_8sdp"
                 android:autofillHints=""
                 android:background="@drawable/custom_edit_text"
-                android:ems="14"
+                android:ems="12"
                 android:hint="@string/user_hint"
                 android:inputType="text"
-                android:paddingStart="10dp"
+                android:paddingStart="@dimen/_10sdp"
+                android:paddingEnd="@dimen/_10sdp"
                 android:textColorHint="@color/black"
+                android:textSize="@dimen/_16ssp"
                 android:visibility="visible" />
 
             <EditText
                 android:id="@+id/editTextEmail"
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_margin="10dp"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_margin="@dimen/_8sdp"
                 android:autofillHints=""
                 android:background="@drawable/custom_edit_text"
-                android:ems="14"
+                android:ems="12"
                 android:hint="@string/email_hint"
                 android:inputType="textEmailAddress"
-                android:paddingStart="10dp"
+                android:paddingStart="@dimen/_10sdp"
+                android:paddingEnd="@dimen/_10sdp"
                 android:textColorHint="@color/black"
+                android:textSize="@dimen/_16ssp"
                 android:visibility="visible" />
 
             <EditText
                 android:id="@+id/editTextPhone"
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_margin="10dp"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_margin="@dimen/_8sdp"
                 android:autofillHints=""
                 android:background="@drawable/custom_edit_text"
-                android:ems="14"
+                android:ems="12"
                 android:hint="@string/phone_hint"
                 android:inputType="phone"
-                android:paddingStart="10dp"
+                android:paddingStart="@dimen/_10sdp"
+                android:paddingEnd="@dimen/_10sdp"
                 android:textColorHint="@color/black"
+                android:textSize="@dimen/_16ssp"
                 android:visibility="visible" />
 
             <androidx.appcompat.widget.AppCompatButton
@@ -83,27 +88,28 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="20dp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginBottom="@dimen/_20sdp"
                 android:background="@drawable/custom_button"
                 android:text="@string/send_otp"
                 android:textColor="@color/black"
                 android:visibility="visible" />
 
 
-
             <EditText
                 android:id="@+id/editTextOtp"
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_margin="10dp"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_margin="@dimen/_8sdp"
                 android:autofillHints=""
                 android:background="@drawable/custom_edit_text"
                 android:ems="14"
                 android:hint="@string/enter_otp"
                 android:inputType="number"
-                android:paddingStart="10dp"
+                android:paddingStart="@dimen/_10sdp"
+                android:paddingEnd="@dimen/_10sdp"
                 android:textColorHint="@color/black"
+                android:textSize="@dimen/_16ssp"
                 android:visibility="gone" />
 
 
@@ -112,8 +118,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="20dp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginBottom="@dimen/_20sdp"
                 android:background="@drawable/custom_button"
                 android:text="@string/verify_otp"
                 android:textColor="@color/black"
