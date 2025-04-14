@@ -46,6 +46,8 @@ dependencies {
     implementation("io.github.chaosleung:pinview:1.4.4")
     implementation(platform("com.google.firebase:firebase-bom:33.12.0"))
     implementation("com.google.firebase:firebase-database")
+    implementation("androidx.navigation:navigation-fragment:2.7.5")
+    implementation("androidx.navigation:navigation-ui:2.7.5")
     implementation("com.google.firebase:firebase-storage")
     implementation("com.google.firebase:firebase-auth:23.2.0")
     implementation("com.google.firebase:firebase-firestore:25.1.3")

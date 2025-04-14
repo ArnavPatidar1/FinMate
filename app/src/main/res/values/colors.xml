@@ -1,8 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="black">#FF000000</color>
+    <color name="red">#FA0707</color>
     <color name="white">#FFFFFFFF</color>
     <color name="green">#81C370</color>
-    <color name="sky_blue">#00ACC1</color>
+    <color name="sky_blue">#0EC6DC</color>
+    <!-- gray -->
+    <color name="gray">#BDBDBD</color> <!-- light gray -->
+
+    <!-- purple_500 -->
+    <color name="purple_500">#6200EE</color> <!-- main purple -->
+
+    <!-- purple_200 -->
+    <color name="purple_200">#BB86FC</color> <!-- soft halo purple -->
+    <color name="slider_color">#16D763</color> <!-- soft halo purple -->
+    <color name="button_colo">#007BFF</color> <!-- soft halo purple -->
 
 </resources>

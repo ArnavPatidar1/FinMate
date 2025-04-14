@@ -6,4 +6,9 @@
     </style>
 
     <style name="Theme.FinMate" parent="Base.Theme.FinMate" />
+
+    <style name="CustomProgressBar" parent="Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/custom_progress_bar</item>
+    </style>
+
 </resources>
