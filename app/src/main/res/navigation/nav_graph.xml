@@ -1,6 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:app="http://schemas.android.com/apk/res-auto"
-             android:id="@+id/nav_graph">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="arnav.example.finmate.fragments.HomeFragment"
+        android:label="Home" />
+
+    <fragment
+        android:id="@+id/analyzeFragment"
+        android:name="arnav.example.finmate.fragments.AnalysisFragment"
+        android:label="Analyze" />
+
+    <fragment
+        android:id="@+id/addFragment"
+        android:name="arnav.example.finmate.fragments.AddFragment"
+        android:label="Add Expense">
+        <action
+            android:id="@+id/action_addFragment_to_homeFragment"
+            app:destination="@+id/homeFragment" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/blogFragment"
+        android:name="arnav.example.finmate.fragments.BlogFragment"
+        android:label="Blogs" />
+
+    <fragment
+        android:id="@+id/chatFragment"
+        android:name="arnav.example.finmate.fragments.ChatFragment"
+        android:label="Chat Bot" />
+
 
 </navigation>

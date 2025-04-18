@@ -48,6 +48,7 @@
                 android:paddingStart="@dimen/_10sdp"
                 android:paddingEnd="@dimen/_10sdp"
                 android:textColorHint="@color/black"
+                android:textColor="@color/black"
                 android:textSize="@dimen/_16ssp"
                 android:visibility="visible" />
 
@@ -64,6 +65,7 @@
                 android:paddingStart="@dimen/_10sdp"
                 android:paddingEnd="@dimen/_10sdp"
                 android:textColorHint="@color/black"
+                android:textColor="@color/black"
                 android:textSize="@dimen/_16ssp"
                 android:visibility="visible" />
 
@@ -80,6 +82,7 @@
                 android:paddingStart="@dimen/_10sdp"
                 android:paddingEnd="@dimen/_10sdp"
                 android:textColorHint="@color/black"
+                android:textColor="@color/black"
                 android:textSize="@dimen/_16ssp"
                 android:visibility="visible" />
 
@@ -109,6 +112,7 @@
                 android:paddingStart="@dimen/_10sdp"
                 android:paddingEnd="@dimen/_10sdp"
                 android:textColorHint="@color/black"
+                android:textColor="@color/black"
                 android:textSize="@dimen/_16ssp"
                 android:visibility="gone" />
 
