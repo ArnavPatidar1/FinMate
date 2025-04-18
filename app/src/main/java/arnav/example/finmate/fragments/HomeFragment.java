@@ -25,7 +25,7 @@ import arnav.example.finmate.model.ExpenseModel;
 
 public class HomeFragment extends Fragment {
 
-ArrayList<ExpenseModel>  expenses = new ArrayList<>();
+    ArrayList<ExpenseModel> expenses = new ArrayList<>();
 
     RecyclerViewExpenseAdapter adapter;
     private FirebaseFirestore db;
@@ -70,9 +70,17 @@ ArrayList<ExpenseModel>  expenses = new ArrayList<>();
                 });
 
 
-adapter =new RecyclerViewExpenseAdapter(getContext(), expenses);
-recyclerExpense.setAdapter(adapter);
+        adapter = new RecyclerViewExpenseAdapter(getContext(), expenses);
+        recyclerExpense.setAdapter(adapter);
 
         return view;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+         // Your method to load expenses from DB
+        adapter.notifyDataSetChanged();
+    }
+
 }

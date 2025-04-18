@@ -1,4 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/home"
+            android:icon="@drawable/home_icon"
+            android:title="@string/home" />
+
+        <item
+            android:id="@+id/analyze"
+            android:icon="@drawable/analysis_icon"
+            android:title="@string/analysis" />
+
+        <item
+            android:id="@+id/setBudget"
+            android:icon="@drawable/budget_icon"
+            android:title="@string/budget" />
+
+        <item
+            android:id="@+id/goal"
+            android:icon="@drawable/goal_icon"
+            android:title="@string/saving_goals" />
+
+        <item
+            android:id="@+id/blog"
+            android:icon="@drawable/blog_icon3"
+            android:title="@string/blogs" />
+
+        <item
+            android:id="@+id/chat"
+            android:icon="@drawable/chat_bot_icon"
+            android:title="@string/chat_bot" />
+    </group>
+
+
+    <item android:title="@string/profile">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/profile"
+                    android:icon="@drawable/user_profile"
+                    android:title="@string/profile" />
+
+                <item
+                    android:id="@+id/logout"
+                    android:icon="@drawable/logout_icon"
+                    android:title="@string/logout" />
+            </group>
+        </menu>
+    </item>
+
+
+    <item android:title="@string/communicate">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/rating"
+                    android:icon="@drawable/review_icon"
+                    android:title="@string/rate_us" />
+
+                <item
+                    android:id="@+id/share"
+                    android:icon="@drawable/share_icon"
+                    android:title="@string/share" />
+            </group>
+        </menu>
+    </item>
+
 
 </menu>

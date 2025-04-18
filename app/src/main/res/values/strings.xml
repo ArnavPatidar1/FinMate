@@ -10,12 +10,28 @@
     <string name="profile_image">View User Profile</string>
     <string name="total_bal">Total Balance</string>
     <string name="monthly_expense">Monthly Expense</string>
+    <string name="open_navigation_drawer">Open Navigation Drawer</string>
+    <string name="close_navigation_drawer">Close Navigation Drawer</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="category">Category</string>
     <string name="note">Note</string>
     <string name="recent_spent">Recent Spent</string>
     <string name="expense">Amount</string>
+    <string name="notifications">Notifications</string>
+    <string name="menu">Menu</string>
+    <string name="home">Home</string>
+    <string name="analysis">Analysis</string>
+    <string name="add_expense">Add Expense</string>
+    <string name="blogs">Blogs</string>
+    <string name="chat_bot">Chat Bot</string>
+    <string name="budget">Budget</string>
+    <string name="saving_goals">Saving Goals</string>
+    <string name="profile">Profile</string>
+    <string name="logout">Logout</string>
+    <string name="communicate">Communicate</string>
+    <string name="rate_us">Rate Us</string>
+    <string name="share">Share</string>
     <string-array name="expense_categories">
         <item>Select Category</item>
         <item>Food &amp; Dining</item>

@@ -8,6 +8,8 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +22,7 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.nafis.bottomnavigation.NafisBottomNavigation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,6 +44,7 @@ public class AddFragment extends Fragment {
     private AppCompatButton btnAddExpense;
     private FirebaseFirestore db;
     private FirebaseAuth auth;
+    NavController navController;
 
     public AddFragment() {
         // Required empty public constructor
@@ -130,6 +134,7 @@ public class AddFragment extends Fragment {
                 .set(expense)
                 .addOnSuccessListener(unused -> Toast.makeText(getContext(), "Expense added", Toast.LENGTH_SHORT).show())
                 .addOnFailureListener(e -> Toast.makeText(getContext(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+
 
 
     }

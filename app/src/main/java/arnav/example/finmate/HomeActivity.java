@@ -1,6 +1,7 @@
 package arnav.example.finmate;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -9,27 +10,34 @@ import android.view.View;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
+import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.navigation.NavigationBarView;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class HomeActivity extends AppCompatActivity {
     BottomNavigationView navBar;
     MaterialToolbar toolbar;
-
+    DrawerLayout drawerLayout;
+    NavigationView nav_drawer;
     private FirebaseFirestore db;
     private FirebaseAuth auth;
     TextView toolbarTitle;
@@ -42,19 +50,23 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_home);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.drawerLayout), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
             return insets;
         });
 
         hideSystemUI();
+        toolbarTitle = findViewById(R.id.toolbarTitle);
+        toolbar = findViewById(R.id.toolbar);
+        navBar = findViewById(R.id.navBar);
+        drawerLayout = findViewById(R.id.drawerLayout);
+        nav_drawer = findViewById(R.id.nav_drawer);
 
+
+        /*Fetching and adding User Name  to toolbar*/
         auth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
-
-        toolbarTitle = findViewById(R.id.toolbarTitle);
-
         String uid = Objects.requireNonNull(auth.getCurrentUser()).getUid();
         db.collection("users").document(uid)
                 .get()
@@ -72,7 +84,63 @@ public class HomeActivity extends AppCompatActivity {
                     Log.e("Username", "Failed to fetch user name", e);
                 });
 
-        navBar = findViewById(R.id.navBar);
+        /*Tool Bar*/
+        setSupportActionBar(toolbar);
+
+        /*Creating Map*/
+        Map<Integer, Integer> menuToFragmentMap = new HashMap<>();
+        menuToFragmentMap.put(R.id.home, R.id.homeFragment);
+        menuToFragmentMap.put(R.id.analyze, R.id.analyzeFragment);
+        menuToFragmentMap.put(R.id.blog, R.id.blogFragment);
+        menuToFragmentMap.put(R.id.chat, R.id.chatFragment);
+        menuToFragmentMap.put(R.id.setBudget, R.id.budgetFragment);
+        menuToFragmentMap.put(R.id.goal, R.id.savingGoalFragment);
+
+        /*Opening and Closing Navigation Drawer and setting actions to toolbar menu's items*/
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_navigation_drawer, R.string.close_navigation_drawer);
+        toggle.setDrawerIndicatorEnabled(false);//this will disable implicitly given menu button on toolbar
+
+        toolbar.setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == R.id.action_menu) {
+                if (drawerLayout.isDrawerOpen(GravityCompat.END)) {
+                    drawerLayout.closeDrawer(GravityCompat.END);
+                } else {
+                    drawerLayout.openDrawer(GravityCompat.END);
+                }
+                return true;
+            }
+            if (item.getItemId() == R.id.action_notification) {
+                return true;
+            }
+            return false;
+        });
+        nav_drawer.bringToFront();
+
+        /*Setting actions to Drawer menu's items*/
+        nav_drawer.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int menuId = item.getItemId();
+                Integer destinationId = menuToFragmentMap.get(menuId);
+                if (destinationId != null) {
+                    navController.navigate(destinationId);
+                } else {
+                    if (menuId == R.id.logout) {
+                        FirebaseAuth.getInstance().signOut();
+                        Intent intent = new Intent(HomeActivity.this, MainActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                    }
+                }
+                drawerLayout.closeDrawer(GravityCompat.END);
+                return true;
+            }
+        });
+
+
+
+
+        /*Bottom Navigation Bar*/
         navBar.getMenu().getItem(2).setEnabled(false);
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.container);
@@ -81,34 +149,37 @@ public class HomeActivity extends AppCompatActivity {
         } else {
             throw new IllegalStateException("NavHostFragment not found");
         }
-        navBar.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                int itemId = item.getItemId();
-                if (itemId == R.id.home) {
-                    navController.navigate(R.id.homeFragment);
-                    return true;
-                } else if (itemId == R.id.analyze) {
-                    navController.navigate(R.id.analyzeFragment);
-                    return true;
-                } else if (itemId == R.id.blog) {
-                    navController.navigate(R.id.blogFragment);
-                    return true;
-                } else if (itemId == R.id.chat) {
-                    navController.navigate(R.id.chatFragment);
-                    return true;
-                }
-                return false;
+
+
+        navBar.setOnItemSelectedListener(item -> {
+            int menuId = item.getItemId();
+            Integer destinationId = menuToFragmentMap.get(menuId);
+
+            if (destinationId != null && navController.getCurrentDestination().getId() != destinationId) {
+                navController.navigate(destinationId);
             }
+
+            return true;
         });
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(view -> {
-            navController.navigate(R.id.addFragment);
+            if (navController.getCurrentDestination().getId() != R.id.addFragment) {
+                navController.navigate(R.id.addFragment);
+            }
         });
 
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        //Back Press Handling
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (drawerLayout.isDrawerOpen(GravityCompat.END)) {
+                    drawerLayout.closeDrawer(GravityCompat.END);
+                } else if (!navController.popBackStack()) {
+                    finish();
+                }
+            }
+        });
     }
 
 
