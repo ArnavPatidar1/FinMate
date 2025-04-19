@@ -14,6 +14,20 @@
     <!-- purple_200 -->
     <color name="purple_200">#BB86FC</color> <!-- soft halo purple -->
     <color name="slider_color">#16D763</color> <!-- soft halo purple -->
-    <color name="button_colo">#007BFF</color> <!-- soft halo purple -->
+    <color name="button_colo">#FFEA0F</color> <!-- soft halo purple -->
+
+
+    <color name="category1">#039BE5</color>
+    <color name="category2">#D81B60</color>
+    <color name="category3">#FFEA0F</color>
+    <color name="category4">#139919</color>
+    <color name="category5">#A10DC8</color>
+    <color name="category6">#E53935</color>
+    <color name="category7">#00E676</color>
+    <color name="category8">#AB1EC3</color>
+    <color name="category9">#D04281</color>
+    <color name="category10">#98989D</color>
+    <color name="dark_green">#00FF05</color>
+
 
 </resources>

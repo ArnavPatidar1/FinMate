@@ -1,130 +1,174 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.AddFragment">
 
-
-    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="16dp"
-        android:background="@android:color/white">
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_20sdp"
+            android:text="@string/add_transaction"
+            android:textSize="@dimen/_18ssp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:id="@+id/btnLinear"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@+id/edtAmount"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/title">
 
-            <!-- Header -->
-            <TextView
-                android:id="@+id/titleText"
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_income"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Add Transaction"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:layout_gravity="center_horizontal"
-                android:paddingBottom="16dp" />
+                android:layout_margin="@dimen/_10sdp"
+                android:layout_weight="1"
+                android:background="@drawable/default_selector"
+                android:text="@string/income"
+                android:textStyle="bold" />
 
-            <!-- Income/Expense Toggle -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center"
-                android:paddingBottom="16dp">
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/btnIncome"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Income ⬇"
-                    android:backgroundTint="#F0F0F0"
-                    android:textColor="#000" />
-
-                <Space android:layout_width="16dp" android:layout_height="wrap_content" />
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/btnExpense"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Expense ⬆"
-                    android:backgroundTint="#007BFF"
-                    android:textColor="@android:color/white" />
-            </LinearLayout>
-
-            <!-- Amount -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Amount">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etAmount"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="numberDecimal" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <!-- Category -->
-            <Spinner
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:id="@+id/category"
-                android:entries="@array/expense_categories"
-                />
-
-            <!-- Date -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Date"
-                android:layout_marginTop="16dp"
-                app:endIconMode="custom" >
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etDate"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:focusable="false"
-                    android:clickable="true"
-                    android:inputType="none" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <!-- Description -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Description"
-                android:layout_marginTop="16dp">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etDescription"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:maxLines="3" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <!-- Submit Button -->
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnAddExpense"
-                android:layout_width="match_parent"
+                android:id="@+id/btn_expense"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Add Expense"
-                android:layout_marginTop="24dp"
-                android:backgroundTint="#007BFF"
-                android:textColor="@android:color/white"
-                android:layout_gravity="center"
-                android:drawablePadding="8dp"
-                android:padding="12dp"
-                android:background="@drawable/rounded_button" />
-
+                android:layout_margin="@dimen/_10sdp"
+                android:layout_weight="1"
+                android:background="@drawable/default_selector"
+                android:text="@string/expense"
+                android:textStyle="bold" />
         </LinearLayout>
-    </ScrollView>
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/edtAmount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_20sdp"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:background="@drawable/custom_edit_text2"
+            android:drawableStart="@drawable/ruppee_icon"
+            android:drawablePadding="@dimen/_3sdp"
+            android:drawableTint="@color/gray"
+            android:ems="12"
+            android:hint="@string/enter_amount"
+            android:inputType="numberDecimal"
+            app:layout_constraintBottom_toTopOf="@+id/edtDate"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnLinear" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/edtDate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_20sdp"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:background="@drawable/custom_edit_text2"
+            android:drawableStart="@drawable/calender_icon"
+            android:drawablePadding="@dimen/_3sdp"
+            android:drawableTint="@color/gray"
+            android:ems="12"
+            android:hint="@string/select_date"
+            android:focusable="false"
+            android:inputType="date"
+            app:layout_constraintBottom_toTopOf="@+id/edtCategory"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edtAmount" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/edtCategory"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_20sdp"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:background="@drawable/custom_edit_text2"
+            android:drawableStart="@drawable/category_icon"
+            android:drawablePadding="@dimen/_3sdp"
+            android:drawableTint="@color/gray"
+            android:focusable="false"
+            android:ems="12"
+            android:hint="@string/select_category"
+            android:inputType="text"
+            app:layout_constraintBottom_toTopOf="@+id/edtAccount"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edtDate" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/edtAccount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_20sdp"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:background="@drawable/custom_edit_text2"
+            android:drawableStart="@drawable/account_icon"
+            android:drawablePadding="@dimen/_5sdp"
+            android:drawableTint="@color/gray"
+            android:focusable="false"
+            android:ems="12"
+            android:hint="@string/select_account"
+            android:inputType="text"
+            app:layout_constraintBottom_toTopOf="@+id/edtDescription"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edtCategory" />
 
 
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/edtDescription"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_20sdp"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:background="@drawable/custom_edit_text2"
+            android:drawableStart="@drawable/description_icon"
+            android:drawablePadding="@dimen/_3sdp"
+            android:drawableTint="@color/gray"
+            android:ems="12"
+            android:hint="@string/description"
+            android:inputType="text"
+            app:layout_constraintBottom_toTopOf="@id/btnAddTransaction"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edtAccount" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnAddTransaction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_10sdp"
+            android:background="@drawable/rounded_button"
+            android:text="@string/add_transaction"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edtDescription" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

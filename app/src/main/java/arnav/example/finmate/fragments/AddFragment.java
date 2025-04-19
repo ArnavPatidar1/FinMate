@@ -1,141 +1,168 @@
 package arnav.example.finmate.fragments;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.icu.util.Calendar;
 import android.os.Bundle;
 
-import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.nafis.bottomnavigation.NafisBottomNavigation;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import arnav.example.finmate.R;
+import arnav.example.finmate.adapters.AccountAdapter;
+import arnav.example.finmate.adapters.CategoryAdapter;
+import arnav.example.finmate.databinding.CategoryDialogBoxBinding;
+import arnav.example.finmate.databinding.FragmentAddBinding;
+import arnav.example.finmate.helper.Backend;
+import arnav.example.finmate.model.AccountModel;
 import arnav.example.finmate.model.CategoryModel;
 import arnav.example.finmate.model.ExpenseModel;
 
 
 public class AddFragment extends Fragment {
+    private boolean isIncome = false;
+    private FragmentAddBinding binding;
 
-    private EditText etAmount, etDate, etDescription;
-    private Spinner categorySpinner;
-    private List<CategoryModel> categoryList = new ArrayList<>();
-    private List<String> categoryNames = new ArrayList<>();
-    private Map<String, String> categoryIdMap = new HashMap<>();
-    private AppCompatButton btnAddExpense;
     private FirebaseFirestore db;
     private FirebaseAuth auth;
     NavController navController;
+
+    Backend helper;
+
 
     public AddFragment() {
         // Required empty public constructor
     }
 
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_add, container, false);
+        binding = FragmentAddBinding.inflate(inflater);
 
-        etAmount = view.findViewById(R.id.etAmount);
-        etDate = view.findViewById(R.id.etDate);
-        etDescription = view.findViewById(R.id.etDescription);
-        categorySpinner = view.findViewById(R.id.category);
-        btnAddExpense = view.findViewById(R.id.btnAddExpense);
+        helper = new Backend(requireContext());
+        navController = NavHostFragment.findNavController(AddFragment.this);
+        binding.btnIncome.setOnClickListener(v -> {
+            binding.btnIncome.setBackground(getContext().getDrawable(R.drawable.income_button));
+            binding.btnExpense.setBackground(getContext().getDrawable(R.drawable.default_selector));
+            isIncome = true;
+        });
+
+        binding.btnExpense.setOnClickListener(v -> {
+            binding.btnIncome.setBackground(getContext().getDrawable(R.drawable.default_selector));
+            binding.btnExpense.setBackground(getContext().getDrawable(R.drawable.expense_button));
+            isIncome = false;
+        });
+
 
         db = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
-        loadCategories();
-        setupDatePicker();
+        binding.edtDate.setOnClickListener(v -> {
+            helper.showDatePicker(binding.edtDate);
+        });
 
-        btnAddExpense.setOnClickListener(v -> saveExpenseToFirestore());
 
-        return view;
+        binding.edtCategory.setOnClickListener(v -> {
+            CategoryDialogBoxBinding dialogBoxBinding = CategoryDialogBoxBinding.inflate(inflater);
+            AlertDialog categoryDialog = new AlertDialog.Builder(getContext()).create();
+            categoryDialog.setView(dialogBoxBinding.getRoot());
+
+            dialogBoxBinding.categoryRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+            CategoryAdapter categoryAdapter = new CategoryAdapter(requireContext(), Backend.categories, new CategoryAdapter.CategoryClickListener() {
+                @Override
+                public void onCategoryClicked(CategoryModel category) {
+                    binding.edtCategory.setText(category.getName());
+                    categoryDialog.dismiss();
+                }
+            });
+            dialogBoxBinding.categoryRecyclerView.setAdapter(categoryAdapter);
+
+            categoryDialog.show();
+        });
+
+        binding.edtAccount.setOnClickListener(v -> {
+            CategoryDialogBoxBinding dialogBoxBinding = CategoryDialogBoxBinding.inflate(inflater);
+            AlertDialog accountDialog = new AlertDialog.Builder(getContext()).create();
+            accountDialog.setView(dialogBoxBinding.getRoot());
+
+            ArrayList<AccountModel> accounts = new ArrayList<>();
+            accounts.add(new AccountModel(0, "Cash"));
+            accounts.add(new AccountModel(0, "Bank"));
+            accounts.add(new AccountModel(0, "UPI"));
+
+            AccountAdapter accountAdapter = new AccountAdapter(requireContext(), accounts, new AccountAdapter.AccountClickListener() {
+                @Override
+                public void onAccountSelected(AccountModel account) {
+                    binding.edtAccount.setText(account.getAccountName());
+                    accountDialog.dismiss();
+                }
+            });
+            dialogBoxBinding.categoryRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            dialogBoxBinding.categoryRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
+            dialogBoxBinding.categoryRecyclerView.setAdapter(accountAdapter);
+
+            accountDialog.show();
+        });
+
+        binding.btnAddTransaction.setOnClickListener(v -> saveExpenseToFirestore());
+
+        return binding.getRoot();
     }
-
-    private void loadCategories() {
-        db.collection("categories")
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    categoryList.clear();
-                    categoryNames.clear();
-                    categoryIdMap.clear();
-
-                    for (DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()) {
-                        CategoryModel category = doc.toObject(CategoryModel.class);
-                        categoryList.add(category);
-                        categoryNames.add(category.getName());
-                        categoryIdMap.put(category.getName(), category.getId());
-                    }
-
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
-                            android.R.layout.simple_spinner_item, categoryNames);
-                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    categorySpinner.setAdapter(adapter);
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(requireContext(), "Failed to load categories", Toast.LENGTH_SHORT).show();
-                });
-    }
-
 
     private void setupDatePicker() {
-        etDate.setOnClickListener(v -> {
+        binding.edtDate.setOnClickListener(v -> {
             Calendar calendar = Calendar.getInstance();
             new DatePickerDialog(requireContext(), (view, year, month, dayOfMonth) -> {
                 String date = dayOfMonth + "/" + (month + 1) + "/" + year;
-                etDate.setText(date);
+                binding.edtDate.setText(date);
             }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
         });
     }
 
     private void saveExpenseToFirestore() {
-        String amountStr = etAmount.getText().toString().trim();
-        String date = etDate.getText().toString().trim();
-        String description = etDescription.getText().toString().trim();
-        String categoryName = categorySpinner.getSelectedItem().toString();
-        String selectedCategoryName = categorySpinner.getSelectedItem().toString();
-        String categoryId = categoryIdMap.get(selectedCategoryName);
+        String amountStr = binding.edtAmount.getText().toString().trim();
+        String date = binding.edtDate.getText().toString().trim();
+        String description = binding.edtDescription.getText().toString().trim();
+        String category = binding.edtCategory.getText().toString().trim();
+        CategoryModel categoryModel = Backend.getCategoryDetails(category);
+        String account = binding.edtAccount.getText().toString().trim();
 
-        if (amountStr.isEmpty() || date.isEmpty() || description.isEmpty()) {
+        if (amountStr.isEmpty() || date.isEmpty() || category.isEmpty() || account.isEmpty()) {
             Toast.makeText(getContext(), "Please fill all fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
         double amount = Double.parseDouble(amountStr);
 
-        String userId = auth.getCurrentUser().getUid();
-        String expenseId = db.collection("users").document(userId)
-                .collection("expenses").document().getId();
+        ExpenseModel expense;
+        if (description.isEmpty()) {
+            expense = new ExpenseModel(categoryModel, amount, date, account, isIncome);
+        } else {
+            expense = new ExpenseModel(categoryModel, amount, description, date, account, isIncome);
+        }
 
-        ExpenseModel expense = new ExpenseModel(expenseId,  categoryId, amount,date, description, false);
-
-        db.collection("users").document(userId)
-                .collection("expenses").document(expenseId)
-                .set(expense)
-                .addOnSuccessListener(unused -> Toast.makeText(getContext(), "Expense added", Toast.LENGTH_SHORT).show())
-                .addOnFailureListener(e -> Toast.makeText(getContext(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
-
-
+        helper.addExpense(expense, documentReference -> {
+            Toast.makeText(getContext(), "Expense Added", Toast.LENGTH_SHORT).show();
+            navController.navigate(R.id.homeFragment);
+        }, e -> {
+            Toast.makeText(getContext(), "Failed", Toast.LENGTH_SHORT).show();
+        });
 
     }
 
