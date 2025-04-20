@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 import arnav.example.finmate.R;
 import arnav.example.finmate.databinding.AccountsRowBinding;
+import arnav.example.finmate.helper.Backend;
 import arnav.example.finmate.model.AccountModel;
 
 public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.AccountViewHolder> {

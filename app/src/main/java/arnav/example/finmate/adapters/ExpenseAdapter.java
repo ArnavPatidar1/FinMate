@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 import arnav.example.finmate.R;
 import arnav.example.finmate.databinding.DisplayTransactionRowBinding;
+import arnav.example.finmate.helper.Backend;
 import arnav.example.finmate.model.CategoryModel;
 import arnav.example.finmate.model.ExpenseModel;
 
@@ -36,6 +37,7 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseV
     public void onBindViewHolder(@NonNull ExpenseViewHolder holder, int position) {
         ExpenseModel expense = expenses.get(position);
         holder.binding.rowAccount.setText(expense.getAccountName());
+        holder.binding.rowAccount.setBackgroundTintList(context.getColorStateList(Backend.getAccountColor(expense.getAccountName())));
         holder.binding.rowDate.setText(expense.getDate());
         holder.binding.rowAmount.setText(String.valueOf(expense.getAmount()));
         CategoryModel category = expense.getCategory();

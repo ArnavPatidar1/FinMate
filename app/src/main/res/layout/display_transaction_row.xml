@@ -8,7 +8,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:cardBackgroundColor="#DBA7E7"
+        app:cardBackgroundColor="#F3BCFF"
         app:cardCornerRadius="10dp"
         app:cardElevation="8dp"
         app:cardUseCompatPadding="true"
@@ -19,7 +19,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <ImageView
                 android:id="@+id/imgCategory"
@@ -40,14 +40,15 @@
             <TextView
                 android:id="@+id/row_category"
                 android:layout_width="wrap_content"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/_2sdp"
                 android:layout_marginStart="@dimen/_10sdp"
                 android:layout_marginTop="@dimen/_5sdp"
                 android:text="@string/category"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_16ssp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/row_note"
+                app:layout_constraintBottom_toTopOf="@+id/row_account"
                 app:layout_constraintStart_toEndOf="@+id/imgCategory"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -58,6 +59,8 @@
                 android:layout_marginStart="@dimen/_10sdp"
                 android:layout_marginBottom="@dimen/_8sdp"
                 android:text="@string/account"
+                android:padding="2dp"
+                android:background="@color/gray"
                 android:textColor="@color/black"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/imgCategory"
