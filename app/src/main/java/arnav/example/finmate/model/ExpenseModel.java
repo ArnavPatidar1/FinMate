@@ -1,5 +1,7 @@
 package arnav.example.finmate.model;
 
+import com.google.firebase.Timestamp;
+
 public class ExpenseModel {
     private String id;
     private CategoryModel category;
@@ -8,6 +10,7 @@ public class ExpenseModel {
     private String date;
     private String accountName;
     private boolean isIncome;
+    private Timestamp timestamp;
 
     public ExpenseModel() {
         // Required for Firestore
@@ -74,6 +77,14 @@ public class ExpenseModel {
 
     public void setAccountName(String accountName) {
         this.accountName = accountName;
+    }
+
+    public Timestamp getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Timestamp timestamp) {
+        this.timestamp = timestamp;
     }
 }
 

@@ -21,6 +21,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -119,6 +120,7 @@ public class HomeFragment extends Fragment {
         super.onResume();
         // Your method to load expenses from DB
         loadExpense();
+
     }
 
     public void updateDate() {
@@ -130,6 +132,7 @@ public class HomeFragment extends Fragment {
     public void loadExpense() {
         String uid = auth.getCurrentUser().getUid();
         db.collection("users").document(uid).collection("expenses")
+                .orderBy("timestamp", Query.Direction.DESCENDING)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     expenses.clear();

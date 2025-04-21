@@ -21,6 +21,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -146,6 +147,7 @@ public class HomeActivity extends AppCompatActivity {
                 .findFragmentById(R.id.container);
         if (navHostFragment != null) {
             navController = navHostFragment.getNavController();
+//            NavigationUI.setupWithNavController(navBar, navController);
         } else {
             throw new IllegalStateException("NavHostFragment not found");
         }
@@ -162,12 +164,25 @@ public class HomeActivity extends AppCompatActivity {
             return true;
         });
 
+        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+            for (Map.Entry<Integer, Integer> entry : menuToFragmentMap.entrySet()) {
+                if (entry.getValue() == destination.getId()) {
+                    navBar.setSelectedItemId(entry.getKey());
+                    break;
+                }
+            }
+        });
+
+        navBar.setSelectedItemId(R.id.home);
+
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(view -> {
             if (navController.getCurrentDestination().getId() != R.id.addFragment) {
                 navController.navigate(R.id.addFragment);
             }
         });
+
+
 
         //Back Press Handling
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {

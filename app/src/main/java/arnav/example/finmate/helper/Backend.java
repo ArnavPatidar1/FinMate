@@ -10,6 +10,7 @@ import androidx.appcompat.widget.AppCompatEditText;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -51,6 +52,8 @@ public class Backend {
     }
 
     public void addExpense(ExpenseModel expense, OnSuccessListener<DocumentReference> onSuccessListener, OnFailureListener onFailureListener) {
+        expense.setTimestamp(Timestamp.now());
+
         expense.setId(expenseRef.getId());
         expenseRef.add(expense)
                 .addOnSuccessListener(onSuccessListener)
