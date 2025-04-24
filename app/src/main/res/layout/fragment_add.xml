@@ -38,7 +38,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/_10sdp"
                 android:layout_weight="1"
-                android:background="@drawable/default_selector"
+                android:background="@drawable/income_button2"
                 android:text="@string/income"
                 android:textStyle="bold" />
 
@@ -48,7 +48,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/_10sdp"
                 android:layout_weight="1"
-                android:background="@drawable/default_selector"
+                android:background="@drawable/expense_button2"
                 android:text="@string/expense"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -56,7 +56,7 @@
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/edtAmount"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/_35sdp"
             android:layout_marginStart="@dimen/_20sdp"
             android:layout_marginTop="@dimen/_10sdp"
             android:layout_marginEnd="@dimen/_20sdp"
@@ -76,7 +76,7 @@
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/edtDate"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/_35sdp"
             android:layout_marginStart="@dimen/_20sdp"
             android:layout_marginTop="@dimen/_10sdp"
             android:layout_marginEnd="@dimen/_20sdp"
@@ -97,7 +97,7 @@
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/edtCategory"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/_35sdp"
             android:layout_marginStart="@dimen/_20sdp"
             android:layout_marginTop="@dimen/_10sdp"
             android:layout_marginEnd="@dimen/_20sdp"
@@ -118,7 +118,7 @@
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/edtAccount"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/_35sdp"
             android:layout_marginStart="@dimen/_20sdp"
             android:layout_marginTop="@dimen/_10sdp"
             android:layout_marginEnd="@dimen/_20sdp"
@@ -140,7 +140,7 @@
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/edtDescription"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/_35sdp"
             android:layout_marginStart="@dimen/_20sdp"
             android:layout_marginTop="@dimen/_10sdp"
             android:layout_marginEnd="@dimen/_20sdp"

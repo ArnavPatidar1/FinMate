@@ -58,16 +58,20 @@ public class AddFragment extends Fragment {
 
         helper = new Backend(requireContext());
         navController = NavHostFragment.findNavController(AddFragment.this);
-        binding.btnIncome.setOnClickListener(v -> {
-            binding.btnIncome.setBackground(getContext().getDrawable(R.drawable.income_button));
-            binding.btnExpense.setBackground(getContext().getDrawable(R.drawable.default_selector));
-            isIncome = true;
-        });
+
+        binding.btnExpense.setSelected(true);
 
         binding.btnExpense.setOnClickListener(v -> {
-            binding.btnIncome.setBackground(getContext().getDrawable(R.drawable.default_selector));
-            binding.btnExpense.setBackground(getContext().getDrawable(R.drawable.expense_button));
+            binding.btnExpense.setSelected(true);
+            binding.btnIncome.setSelected(false);
             isIncome = false;
+
+        });
+
+        binding.btnIncome.setOnClickListener(v -> {
+            binding.btnIncome.setSelected(true);
+            binding.btnExpense.setSelected(false);
+            isIncome = true;
         });
 
 

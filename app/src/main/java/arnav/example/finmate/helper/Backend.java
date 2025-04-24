@@ -24,6 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import arnav.example.finmate.R;
@@ -199,4 +200,74 @@ public class Backend {
         }
     }
 
+    public static Date getStartOfDay(Calendar cal) {
+        Calendar clone = (Calendar) cal.clone();
+        clone.set(Calendar.HOUR_OF_DAY, 0);
+        clone.set(Calendar.MINUTE, 0);
+        clone.set(Calendar.SECOND, 0);
+        clone.set(Calendar.MILLISECOND, 0);
+        return clone.getTime();
+    }
+
+    public static Date getEndOfDay(Calendar cal) {
+        Calendar clone = (Calendar) cal.clone();
+        clone.set(Calendar.HOUR_OF_DAY, 23);
+        clone.set(Calendar.MINUTE, 59);
+        clone.set(Calendar.SECOND, 59);
+        clone.set(Calendar.MILLISECOND, 999);
+        return clone.getTime();
+    }
+
+    public static Date getStartOfWeek(Calendar cal) {
+        Calendar clone = (Calendar) cal.clone();
+        clone.set(Calendar.DAY_OF_WEEK, clone.getFirstDayOfWeek());
+        return getStartOfDay(clone);
+    }
+
+    public static Date getEndOfWeek(Calendar cal) {
+        Calendar clone = (Calendar) cal.clone();
+        clone.set(Calendar.DAY_OF_WEEK, clone.getFirstDayOfWeek());
+        clone.add(Calendar.DAY_OF_WEEK, 6);
+        return getEndOfDay(clone);
+    }
+
+    public static Date getStartOfMonth(Calendar cal) {
+        Calendar clone = (Calendar) cal.clone();
+        clone.set(Calendar.DAY_OF_MONTH, 1);
+        return getStartOfDay(clone);
+    }
+
+    public static Date getEndOfMonth(Calendar cal) {
+        Calendar clone = (Calendar) cal.clone();
+        clone.set(Calendar.DAY_OF_MONTH, clone.getActualMaximum(Calendar.DAY_OF_MONTH));
+        return getEndOfDay(clone);
+    }
+
+    public interface ExpenseDataCallback {
+        void onSuccess(List<DocumentSnapshot> documents);
+        void onFailure(Exception e);
+    }
+    public static void getFilteredExpenses(
+            String userId,
+            Date startDate,
+            Date endDate,
+            String type, // "Expense" or "Income"
+            ExpenseDataCallback callback
+    ) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("users")
+                .document(userId)
+                .collection("expenses")
+                .whereEqualTo("type", type)
+                .whereGreaterThanOrEqualTo("timestamp", startDate)
+                .whereLessThanOrEqualTo("timestamp", endDate)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    callback.onSuccess(queryDocumentSnapshots.getDocuments());
+                })
+                .addOnFailureListener(callback::onFailure);
+    }
 }
+
+

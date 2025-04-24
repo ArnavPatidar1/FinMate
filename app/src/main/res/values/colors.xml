@@ -28,6 +28,19 @@
     <color name="category9">#D04281</color>
     <color name="category10">#98989D</color>
     <color name="dark_green">#00FF05</color>
+    <array name="pie_chart_colors">
+        <item name="category1">#039BE5</item>
+        <item name="category2">#D81B60</item>
+        <item name="category3">#FFEA0F</item>
+        <item name="category4">#139919</item>
+        <item name="category5">#A10DC8</item>
+        <item name="category6">#E53935</item>
+        <item name="category7">#00E676</item>
+        <item name="category8">#AB1EC3</item>
+        <item name="category9">#D04281</item>
+        <item name="category10">#98989D</item>
+        <item name="dark_green">#00FF05</item>
+    </array>
 
 
 </resources>

@@ -21,7 +21,6 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
-import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -53,7 +52,7 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.drawerLayout), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
@@ -65,25 +64,10 @@ public class HomeActivity extends AppCompatActivity {
         nav_drawer = findViewById(R.id.nav_drawer);
 
 
-        /*Fetching and adding User Name  to toolbar*/
+        /*Initializing database objects*/
         auth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         String uid = Objects.requireNonNull(auth.getCurrentUser()).getUid();
-        db.collection("users").document(uid)
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        String[] name = documentSnapshot.getString("name").split(" ");
-                        // Use the name wherever needed
-                        toolbarTitle.setText("Hello " + name[0]);
-                        Log.d("Username", "User name: " + name[0]);
-                    } else {
-                        Log.d("Username", "No such document");
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    Log.e("Username", "Failed to fetch user name", e);
-                });
 
         /*Tool Bar*/
         setSupportActionBar(toolbar);
@@ -170,6 +154,37 @@ public class HomeActivity extends AppCompatActivity {
                     navBar.setSelectedItemId(entry.getKey());
                     break;
                 }
+            }
+
+            /*Dynamically changing toolbar title based on fragment change*/
+            if (destination.getId() == R.id.homeFragment) {
+                db.collection("users").document(uid)
+                        .get()
+                        .addOnSuccessListener(documentSnapshot -> {
+                            if (documentSnapshot.exists()) {
+                                String[] name = documentSnapshot.getString("name").split(" ");
+                                // Use the name wherever needed
+                                toolbarTitle.setText("Hello " + name[0]);
+                                Log.d("Username", "User name: " + name[0]);
+                            } else {
+                                Log.d("Username", "No such document");
+                            }
+                        })
+                        .addOnFailureListener(e -> {
+                            Log.e("Username", "Failed to fetch user name", e);
+                        });
+            } else if (destination.getId() == R.id.analyzeFragment) {
+                toolbarTitle.setText("Analytics");
+            } else if (destination.getId() == R.id.addFragment) {
+                toolbarTitle.setText("Add Transaction");
+            }else if (destination.getId() == R.id.blogFragment) {
+                toolbarTitle.setText("Blogs");
+            }else if (destination.getId() == R.id.chatFragment) {
+                toolbarTitle.setText("Chat Bot");
+            }else if (destination.getId() == R.id.budgetFragment) {
+                toolbarTitle.setText("Budget");
+            }else if (destination.getId() == R.id.savingGoalFragment) {
+                toolbarTitle.setText("Saving Goals");
             }
         });
 

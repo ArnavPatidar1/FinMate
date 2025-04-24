@@ -29,7 +29,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="@string/login"
+                android:text="@string/login_title"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_28ssp"
                 android:textStyle="bold" />
