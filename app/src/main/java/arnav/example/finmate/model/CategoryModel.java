@@ -2,16 +2,16 @@ package arnav.example.finmate.model;
 
 public class CategoryModel {
     private String name;
-    private int icon; // Resource name (e.g., "ic_food")
+    private String iconName; // Resource name (e.g., "ic_food")
 
-    private int categoryColor;
+    private String categoryColor;
 
     public CategoryModel() {
     } // Needed for Firestore
 
-    public CategoryModel(String name, int iconResName, int categoryColor) {
+    public CategoryModel(String name, String iconResName, String categoryColor) {
         this.name = name;
-        this.icon = iconResName;
+        this.iconName = iconResName;
         this.categoryColor = categoryColor;
     }
 
@@ -21,8 +21,8 @@ public class CategoryModel {
         return name;
     }
 
-    public int getIcon() {
-        return icon;
+    public String getIconName() {
+        return iconName;
     }
 
 
@@ -30,15 +30,15 @@ public class CategoryModel {
         this.name = name;
     }
 
-    public void setIcon(int iconResName) {
-        this.icon = iconResName;
+    public void setIconName(String iconResName) {
+        this.iconName = iconResName;
     }
 
-    public int getCategoryColor() {
+    public String getCategoryColor() {
         return categoryColor;
     }
 
-    public void setCategoryColor(int categoryColor) {
+    public void setCategoryColor(String categoryColor) {
         this.categoryColor = categoryColor;
     }
 }

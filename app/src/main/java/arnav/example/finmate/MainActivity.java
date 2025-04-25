@@ -151,6 +151,8 @@ public class MainActivity extends AppCompatActivity {
                         userData.put("name", name);
                         userData.put("email", email);
                         userData.put("phone", phone);
+                        userData.put("totalExpense", 0);
+                        userData.put("totalIncome", 0);
 
                         db.collection("users").document(uId).set(userData).addOnSuccessListener(aVoid -> {
                             Toast.makeText(this, "Profile Created", Toast.LENGTH_SHORT).show();

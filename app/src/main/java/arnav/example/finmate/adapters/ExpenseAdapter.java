@@ -1,7 +1,6 @@
 package arnav.example.finmate.adapters;
 
 import android.content.Context;
-import android.view.ContentInfo;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,8 +40,9 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseV
         holder.binding.rowDate.setText(expense.getDate());
         holder.binding.rowAmount.setText(String.valueOf(expense.getAmount()));
         CategoryModel category = expense.getCategory();
-        holder.binding.imgCategory.setImageResource(category.getIcon());
-        holder.binding.imgCategory.setBackgroundTintList(context.getColorStateList(category.getCategoryColor()));
+        int iconResId = Backend.getIconResId(category.getIconName());
+        holder.binding.imgCategory.setImageResource(iconResId);
+        holder.binding.imgCategory.setBackgroundTintList(Backend.getColorStateList(context, category.getCategoryColor()));
         holder.binding.rowCategory.setText(category.getName());
         if (expense.isIncome()) {
             holder.binding.rowAmount.setTextColor(context.getColor(R.color.dark_green));

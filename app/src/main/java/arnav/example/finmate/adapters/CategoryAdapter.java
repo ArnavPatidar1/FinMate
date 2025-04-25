@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import arnav.example.finmate.R;
+import arnav.example.finmate.helper.Backend;
 import arnav.example.finmate.model.CategoryModel;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
@@ -44,8 +45,9 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     public void onBindViewHolder(@NonNull CategoryViewHolder holder, int position) {
         CategoryModel category = categories.get(position);
         holder.categoryName.setText(category.getName());
-        holder.categoryIcon.setImageResource(category.getIcon());
-        holder.categoryIcon.setBackgroundTintList(context.getColorStateList(category.getCategoryColor()));
+        int iconResId = Backend.getIconResId(category.getIconName());
+        holder.categoryIcon.setImageResource(iconResId);
+        holder.categoryIcon.setBackgroundTintList(Backend.getColorStateList(context, category.getCategoryColor()));
 
         holder.itemView.setOnClickListener(v -> {
             categoryClickListener.onCategoryClicked(category);

@@ -2,6 +2,7 @@ package arnav.example.finmate;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -14,6 +15,7 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
@@ -23,6 +25,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -190,10 +193,28 @@ public class HomeActivity extends AppCompatActivity {
 
         navBar.setSelectedItemId(R.id.home);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
+
+        final FloatingActionButton fab = findViewById(R.id.fab);
+        final BottomAppBar bottomAppBar = findViewById(R.id.bottom_app_bar);
+
         fab.setOnClickListener(view -> {
             if (navController.getCurrentDestination().getId() != R.id.addFragment) {
                 navController.navigate(R.id.addFragment);
+            }
+        });
+
+        drawerLayout.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+            Rect r = new Rect();
+            drawerLayout.getWindowVisibleDisplayFrame(r);
+            int screenHeight = drawerLayout.getRootView().getHeight();
+            int keypadHeight = screenHeight - r.bottom;
+
+            // If keyboard just closed
+            if (keypadHeight < screenHeight * 0.15) {
+                // Re-anchor FAB after keyboard closes
+                CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) fab.getLayoutParams();
+                params.setAnchorId(R.id.bottom_app_bar);
+                fab.setLayoutParams(params);
             }
         });
 

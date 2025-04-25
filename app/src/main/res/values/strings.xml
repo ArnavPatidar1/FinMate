@@ -46,6 +46,8 @@
     <string name="go_to_previous_date">Go To Previous Date</string>
     <string name="go_to_next_date">Go TO Next Date</string>
     <string name="set_range">Set range</string>
+    <string name="type_your_message">Type your message...</string>
+    <string name="send">Send</string>
 
     <string-array name="filter_range">
         <item>Monthly</item>

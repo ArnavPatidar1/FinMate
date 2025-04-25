@@ -2,10 +2,12 @@ package arnav.example.finmate.helper;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.util.Log;
 import android.widget.EditText;
 
 import androidx.appcompat.widget.AppCompatEditText;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -24,8 +26,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import arnav.example.finmate.R;
 import arnav.example.finmate.model.CategoryModel;
@@ -39,6 +43,10 @@ public class Backend {
     private final Context context;
     private final Calendar calendar;
     public static ArrayList<CategoryModel> categories = new ArrayList<>();
+    private static final Map<String, Integer> iconMap = new HashMap<>();
+    private static final Map<String, Integer> colorMap = new HashMap<>();
+
+
 
     public Backend(Context context) {
         this.context = context;
@@ -164,18 +172,58 @@ public class Backend {
                 cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH);
     }
 
-    public static void setCategories() {
-        categories.add(new CategoryModel("Salary", R.drawable.salaray_icon, R.color.category1));
-        categories.add(new CategoryModel("Rent", R.drawable.rent_icon, R.color.category2));
-        categories.add(new CategoryModel("Education", R.drawable.education_icon, R.color.category3));
-        categories.add(new CategoryModel("Groceries", R.drawable.groceries_icon, R.color.category4));
-        categories.add(new CategoryModel("Food", R.drawable.food_icon, R.color.category5));
-        categories.add(new CategoryModel("Petrol", R.drawable.petrol_icon, R.color.category6));
-        categories.add(new CategoryModel("Investment", R.drawable.investment_icon, R.color.category7));
-        categories.add(new CategoryModel("Loan", R.drawable.loan_icon, R.color.category8));
-        categories.add(new CategoryModel("Travel", R.drawable.travel_icon, R.color.category9));
-        categories.add(new CategoryModel("Others", R.drawable.other_icon, R.color.category10));
+
+    static {
+        iconMap.put("salaray_icon", R.drawable.salaray_icon);
+        iconMap.put("rent_icon", R.drawable.rent_icon);
+        iconMap.put("education_icon", R.drawable.education_icon);
+        iconMap.put("groceries_icon", R.drawable.groceries_icon);
+        iconMap.put("food_icon", R.drawable.food_icon);
+        iconMap.put("petrol_icon", R.drawable.petrol_icon);
+        iconMap.put("investment_icon", R.drawable.investment_icon);
+        iconMap.put("loan_icon", R.drawable.loan_icon);
+        iconMap.put("travel_icon", R.drawable.travel_icon);
+        iconMap.put("other_icon", R.drawable.other_icon);
+        // Add all other mappings here
     }
+
+    public static int getIconResId(String iconName) {
+        Integer resId = iconMap.get(iconName);
+        return resId != null ? resId : R.drawable.other_icon;
+    }
+    public static void setCategories() {
+        categories.clear();
+        categories.add(new CategoryModel("Salary", "salaray_icon", "category1"));
+        categories.add(new CategoryModel("Rent", "rent_icon", "category2"));
+        categories.add(new CategoryModel("Education", "education_icon", "category3"));
+        categories.add(new CategoryModel("Groceries", "groceries_icon", "category4"));
+        categories.add(new CategoryModel("Food", "food_icon", "category5"));
+        categories.add(new CategoryModel("Petrol", "petrol_icon", "category6"));
+        categories.add(new CategoryModel("Investment", "investment_icon", "category7"));
+        categories.add(new CategoryModel("Loan", "loan_icon", "category8"));
+        categories.add(new CategoryModel("Travel", "travel_icon", "category9"));
+        categories.add(new CategoryModel("Others", "other_icon", "category10"));
+    }
+
+    static {
+        colorMap.put("category1", R.color.category1);
+        colorMap.put("category2", R.color.category2);
+        colorMap.put("category3", R.color.category3);
+        colorMap.put("category4", R.color.category4);
+        colorMap.put("category5", R.color.category5);
+        colorMap.put("category6", R.color.category6);
+        colorMap.put("category7", R.color.category7);
+        colorMap.put("category8", R.color.category8);
+        colorMap.put("category9", R.color.category9);
+        colorMap.put("category10", R.color.category10);
+        // Add all color mappings
+    }
+
+    public static ColorStateList getColorStateList(Context context, String colorName) {
+        Integer colorResId = colorMap.get(colorName);
+        return colorResId != null ? ContextCompat.getColorStateList(context, colorResId) : null;
+    }
+
 
     public static CategoryModel getCategoryDetails(String categoryName) {
         for (CategoryModel cat :
