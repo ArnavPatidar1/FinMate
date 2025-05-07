@@ -42,5 +42,7 @@
         <item name="dark_green">#00FF05</item>
     </array>
 
+    <color name="budget_bg">#1F1F1F</color>
+
 
 </resources>

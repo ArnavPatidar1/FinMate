@@ -1,0 +1,21 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Background Circle -->
+    <item android:id="@android:id/background">
+        <shape android:shape="ring"
+            android:useLevel="false">
+            <size android:width="48dp" android:height="48dp"/>
+            <solid android:color="#404040"/>
+        </shape>
+    </item>
+
+    <!-- Progress Circle -->
+    <item android:id="@android:id/progress">
+        <shape android:shape="ring"
+            android:useLevel="true">
+            <size android:width="48dp" android:height="48dp"/>
+            <stroke
+                android:width="4dp"
+                android:color="#6DF811"/>
+        </shape>
+    </item>
+</layer-list>

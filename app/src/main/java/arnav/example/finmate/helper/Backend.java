@@ -32,8 +32,10 @@ import java.util.Locale;
 import java.util.Map;
 
 import arnav.example.finmate.R;
+import arnav.example.finmate.model.CategoryBudgetModel;
 import arnav.example.finmate.model.CategoryModel;
 import arnav.example.finmate.model.ExpenseModel;
+import arnav.example.finmate.model.MonthlyBudgetModel;
 
 public class Backend {
 
@@ -295,27 +297,94 @@ public class Backend {
         void onSuccess(List<DocumentSnapshot> documents);
         void onFailure(Exception e);
     }
-    public static void getFilteredExpenses(
+    public static void loadCategorizedBudget(
             String userId,
-            Date startDate,
-            Date endDate,
-            String type, // "Expense" or "Income"
+            Timestamp startDate,
+            Timestamp endDate,
             ExpenseDataCallback callback
     ) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         db.collection("users")
                 .document(userId)
-                .collection("expenses")
-                .whereEqualTo("type", type)
-                .whereGreaterThanOrEqualTo("timestamp", startDate)
-                .whereLessThanOrEqualTo("timestamp", endDate)
+                .collection("category_budgets")
+                .whereGreaterThanOrEqualTo("startDate", startDate)
+                .whereLessThanOrEqualTo("endDate", endDate)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     callback.onSuccess(queryDocumentSnapshots.getDocuments());
                 })
                 .addOnFailureListener(callback::onFailure);
     }
+
+
+    //BudgetFragment Related Methods
+
+    public static void getMonthlyBudgetForRange(FirebaseFirestore db, String userId, Timestamp startDate, Timestamp endDate, OnSuccessListener<QuerySnapshot> onSuccess, OnFailureListener onFailure) {
+        db.collection("users").document(userId).collection("monthly_budget")
+                .whereGreaterThanOrEqualTo("startDate", startDate)
+                .whereLessThanOrEqualTo("endDate", endDate)
+                .get()
+                .addOnSuccessListener(onSuccess)
+                .addOnFailureListener(onFailure);
+    }
+
+
+    public static void updateMonthlyBudget(FirebaseFirestore db, String userId, MonthlyBudgetModel model, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
+        db.collection("users").document(userId).collection("monthly_budget")
+                .document(model.getMonthlyBudgetId())
+                .set(model)
+                .addOnSuccessListener(onSuccess)
+                .addOnFailureListener(onFailure);
+    }
+
+
+    public static void addNewMonthlyBudget(FirebaseFirestore db, String userId, MonthlyBudgetModel model, OnSuccessListener<DocumentReference> onSuccess, OnFailureListener onFailure) {
+        db.collection("users").document(userId).collection("monthly_budget")
+                .add(model)
+                .addOnSuccessListener(onSuccess)
+                .addOnFailureListener(onFailure);
+    }
+
+    public static void getCategorizedBudget(FirebaseFirestore db, String userId, Timestamp startDate, Timestamp endDate, OnSuccessListener<QuerySnapshot> onSuccess, OnFailureListener onFailure) {
+        db.collection("users").document(userId).collection("category_budgets")
+                .whereGreaterThanOrEqualTo("startDate", startDate)
+                .whereLessThanOrEqualTo("endDate", endDate)
+                .get()
+                .addOnSuccessListener(onSuccess)
+                .addOnFailureListener(onFailure);
+    }
+
+    public static void addNewCategoryBudget(FirebaseFirestore db, String userId, CategoryBudgetModel model, OnSuccessListener<DocumentReference> onSuccess, OnFailureListener onFailure) {
+        db.collection("users").document(userId).collection("category_budgets")
+                .add(model)
+                .addOnSuccessListener(onSuccess)
+                .addOnFailureListener(onFailure);
+    }
+
+    public static void getCategorizedSpent(FirebaseFirestore db, String userId, Timestamp startDate, Timestamp endDate, CategoryModel category, OnSuccessListener<Double> onSuccess, OnFailureListener onFailure) {
+        db.collection("users").document(userId).collection("expenses")
+                .whereEqualTo("income", false)
+                .whereGreaterThanOrEqualTo("timestamp", startDate)
+                .whereLessThanOrEqualTo("timestamp", endDate)
+                .whereEqualTo("category", category)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    double totalSpent = 0;
+                    for (DocumentSnapshot document :
+                            queryDocumentSnapshots) {
+                        ExpenseModel expense = document.toObject(ExpenseModel.class);
+                        if (expense != null) {
+                            totalSpent += expense.getAmount();
+                        }
+                    }
+                    onSuccess.onSuccess(totalSpent);
+                })
+                .addOnFailureListener(onFailure);
+    }
+
+
+
 }
 
 

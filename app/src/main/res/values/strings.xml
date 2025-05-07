@@ -48,6 +48,15 @@
     <string name="set_range">Set range</string>
     <string name="type_your_message">Type your message...</string>
     <string name="send">Send</string>
+    <string name="set_monthly_budget">Set monthly\nbudget</string>
+    <string name="budget_quote">Setting a budget reduces\nexpenditures about 10% on an\naverage.</string>
+    <string name="budget_image">Budget Image</string>
+    <string name="overall_nbudget">Overall\nbudget</string>
+    <string name="set_now">Set now</string>
+    <string name="category_wise_budget">Category wise budget</string>
+    <string name="set_amount">Set amount</string>
+    <string name="add_category">Add Category</string>
+    <string name="set_budget">Set Budget</string>
 
     <string-array name="filter_range">
         <item>Monthly</item>
