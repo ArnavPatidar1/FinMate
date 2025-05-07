@@ -20,6 +20,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -339,10 +340,17 @@ public class Backend {
     }
 
 
-    public static void addNewMonthlyBudget(FirebaseFirestore db, String userId, MonthlyBudgetModel model, OnSuccessListener<DocumentReference> onSuccess, OnFailureListener onFailure) {
+    public static void addNewMonthlyBudget(FirebaseFirestore db, String userId, MonthlyBudgetModel model, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
         db.collection("users").document(userId).collection("monthly_budget")
                 .add(model)
-                .addOnSuccessListener(onSuccess)
+                .addOnSuccessListener(documentReference -> {
+                    String generatedId = documentReference.getId();
+                    model.setMonthlyBudgetId(generatedId);
+
+                    documentReference.update("monthlyBudgetId", generatedId)
+                            .addOnSuccessListener(onSuccess)
+                            .addOnFailureListener(onFailure);
+                })
                 .addOnFailureListener(onFailure);
     }
 
@@ -355,26 +363,50 @@ public class Backend {
                 .addOnFailureListener(onFailure);
     }
 
-    public static void addNewCategoryBudget(FirebaseFirestore db, String userId, CategoryBudgetModel model, OnSuccessListener<DocumentReference> onSuccess, OnFailureListener onFailure) {
-        db.collection("users").document(userId).collection("category_budgets")
-                .add(model)
-                .addOnSuccessListener(onSuccess)
+    public static void saveOrUpdateCategoryBudget(FirebaseFirestore db, String userId, CategoryBudgetModel model,
+                                                  OnSuccessListener<Void> onSuccess,
+                                                  OnFailureListener onFailure) {
+        // Use categoryBudgetId as the Firestore document ID
+        String docId = model.getCategoryBudgetId();
+        DocumentReference docRef = db.collection("users")
+                .document(userId)
+                .collection("category_budgets")
+                .document(docId);
+
+        // Optional: ensure categoryBudgetId in model is always synced with the document ID
+        model.setCategoryBudgetId(docId);
+
+        // Check if document exists
+        docRef.get()
+                .addOnSuccessListener(snapshot -> {
+                    if (snapshot.exists()) {
+                        // Update existing document (merge recommended to avoid overwrite)
+                        docRef.set(model, SetOptions.merge())
+                                .addOnSuccessListener(onSuccess)
+                                .addOnFailureListener(onFailure);
+                    } else {
+                        // Create new document
+                        docRef.set(model)
+                                .addOnSuccessListener(onSuccess)
+                                .addOnFailureListener(onFailure);
+                    }
+                })
                 .addOnFailureListener(onFailure);
     }
+
 
     public static void getCategorizedSpent(FirebaseFirestore db, String userId, Timestamp startDate, Timestamp endDate, CategoryModel category, OnSuccessListener<Double> onSuccess, OnFailureListener onFailure) {
         db.collection("users").document(userId).collection("expenses")
                 .whereEqualTo("income", false)
                 .whereGreaterThanOrEqualTo("timestamp", startDate)
                 .whereLessThanOrEqualTo("timestamp", endDate)
-                .whereEqualTo("category", category)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     double totalSpent = 0;
                     for (DocumentSnapshot document :
                             queryDocumentSnapshots) {
                         ExpenseModel expense = document.toObject(ExpenseModel.class);
-                        if (expense != null) {
+                        if (expense != null && expense.getCategory().getName().equals(category.getName())) {
                             totalSpent += expense.getAmount();
                         }
                     }

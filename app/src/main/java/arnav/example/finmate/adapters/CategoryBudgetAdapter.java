@@ -3,7 +3,6 @@ package arnav.example.finmate.adapters;
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import arnav.example.finmate.R;
@@ -61,8 +57,32 @@ public class CategoryBudgetAdapter extends RecyclerView.Adapter<CategoryBudgetAd
         int iconResId = Backend.getIconResId(categoryModel.getIconName());
         holder.binding.imgCategory.setImageResource(iconResId);
         holder.binding.imgCategory.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.budget_bg));
-        String result = String.valueOf(model.getCategorySpent()) + "/" + String.valueOf(model.getCategoryBudget());
-        holder.binding.rowAmount.setText(result);
+        DecimalFormat format = new DecimalFormat("0.00");
+        holder.binding.spentAmount.setText(format.format(model.getCategorySpent()) + "/");
+        holder.binding.budgetAmount.setText(format.format(model.getCategoryBudget()));
+
+        if (holder.binding.budgetAmount.getTag() instanceof TextWatcher) {
+            holder.binding.budgetAmount.removeTextChangedListener((TextWatcher) holder.binding.budgetAmount.getTag());
+        }
+        TextWatcher watcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                double amt = 0;
+                try {
+                    amt = Double.parseDouble(s.toString());
+                } catch (NumberFormatException ignored) {}
+                model.setCategoryBudget(amt);
+            }
+        };
+        holder.binding.budgetAmount.addTextChangedListener(watcher);
+        holder.binding.budgetAmount.setTag(watcher);
+
 
         int percentUsed = model.getCategoryBudget() > 0
                 ? (int) ((model.getCategorySpent() / model.getCategoryBudget()) * 100)
@@ -70,32 +90,21 @@ public class CategoryBudgetAdapter extends RecyclerView.Adapter<CategoryBudgetAd
         if (percentUsed > 100) percentUsed = 100;
         holder.binding.categoryProgress.setProgress(percentUsed);
 
-//        holder.binding.rowAmount.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence s, int start, int before, int count) {
-//
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable s) {
-//                double amt = 0;
-//                try {
-//                    amt = Double.parseDouble(s.toString());
-//                } catch (NumberFormatException ignored) {}
-//                model.setCategoryBudget(amt);
-//            }
-//        });
     }
 
     @Override
     public int getItemCount() {
         return categoryList.size();
     }
+
+    @Override
+    public void onViewRecycled(@NonNull CategoryBudgetViewHolder holder) {
+        super.onViewRecycled(holder);
+        if (holder.binding.budgetAmount.getTag() instanceof TextWatcher) {
+            holder.binding.budgetAmount.removeTextChangedListener((TextWatcher) holder.binding.budgetAmount.getTag());
+        }
+    }
+
 
     public class CategoryBudgetViewHolder extends RecyclerView.ViewHolder {
 

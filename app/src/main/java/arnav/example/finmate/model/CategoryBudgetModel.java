@@ -6,19 +6,20 @@ public class CategoryBudgetModel {
     private CategoryModel category;
     private double categoryBudget;
     private double categorySpent;
-
-    public double getCategorySpent() {
-        return categorySpent;
-    }
-
-    public void setCategorySpent(double categorySpent) {
-        this.categorySpent = categorySpent;
-    }
-
     private Timestamp startDate;
     private Timestamp endDate;
+    private String categoryBudgetId;
 
     public CategoryBudgetModel() {}
+
+    public CategoryBudgetModel(String categoryBudgetId, CategoryModel category, double categoryBudget, double categorySpent, Timestamp startDate, Timestamp endDate) {
+        this.categoryBudgetId = categoryBudgetId;
+        this.category = category;
+        this.categoryBudget = categoryBudget;
+        this.categorySpent = categorySpent;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
 
     public CategoryBudgetModel(CategoryModel category, double categoryBudget, double categorySpent, Timestamp startDate, Timestamp endDate) {
         this.category = category;
@@ -58,6 +59,22 @@ public class CategoryBudgetModel {
 
     public void setEndDate(Timestamp endDate) {
         this.endDate = endDate;
+    }
+
+    public double getCategorySpent() {
+        return categorySpent;
+    }
+
+    public void setCategorySpent(double categorySpent) {
+        this.categorySpent = categorySpent;
+    }
+
+    public String getCategoryBudgetId() {
+        return categoryBudgetId;
+    }
+
+    public void setCategoryBudgetId(String categoryBudgetId) {
+        this.categoryBudgetId = categoryBudgetId;
     }
 }
 

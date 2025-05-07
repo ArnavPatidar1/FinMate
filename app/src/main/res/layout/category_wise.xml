@@ -68,11 +68,23 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@id/frame_progress" />
 
-            <EditText
-                android:id="@+id/row_amount"
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/_10sdp"
+                android:id="@+id/spent_amount"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/budget_amount"
+                app:layout_constraintTop_toTopOf="parent"
+                android:textSize="@dimen/_14ssp"
+                android:text="@string/budget"
+                android:textColorHint="#6DF811"
+                android:textColor="#6DF811"/>
+
+
+            <EditText
+                android:id="@+id/budget_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:hint="@string/set_amount"
                 android:inputType="numberDecimal"
                 android:textColorHint="#6DF811"
