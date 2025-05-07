@@ -54,7 +54,7 @@
                 android:layout_height="@dimen/_100sdp"
                 android:layout_weight="1"
                 android:scaleType="fitXY"
-                android:src="@drawable/budget_bg4"
+                android:src="@drawable/budget_bg"
                 android:contentDescription="@string/budget_image"/>
 
         </LinearLayout>

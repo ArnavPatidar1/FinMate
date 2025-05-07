@@ -50,7 +50,6 @@ public class Backend {
     private static final Map<String, Integer> colorMap = new HashMap<>();
 
 
-
     public Backend(Context context) {
         this.context = context;
         this.calendar = Calendar.getInstance();
@@ -63,11 +62,12 @@ public class Backend {
         expenseRef = db.collection("users").document(user.getUid()).collection("expenses");
     }
 
-    public void addExpense(ExpenseModel expense, OnSuccessListener<DocumentReference> onSuccessListener, OnFailureListener onFailureListener) {
+    public void addExpense(ExpenseModel expense, OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener) {
         expense.setTimestamp(Timestamp.now());
 
-        expense.setId(expenseRef.getId());
-        expenseRef.add(expense)
+        String docId = expense.getId();;
+        expenseRef.document(docId)
+                .set(expense)
                 .addOnSuccessListener(onSuccessListener)
                 .addOnFailureListener(onFailureListener);
 
@@ -156,12 +156,12 @@ public class Backend {
             return simpleDateFormat.parse(dateString);
         } catch (ParseException e) {
             Log.e("DateParsing", "Failed to parse date: " + dateString, e);
-             return null;
+            return null;
         }
     }
 
     public boolean isSameDay(Calendar cal1, Calendar cal2) {
-        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR)  &&
+        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
                 cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
     }
 
@@ -194,6 +194,7 @@ public class Backend {
         Integer resId = iconMap.get(iconName);
         return resId != null ? resId : R.drawable.other_icon;
     }
+
     public static void setCategories() {
         categories.clear();
         categories.add(new CategoryModel("Salary", "salaray_icon", "category1"));
@@ -251,6 +252,8 @@ public class Backend {
         }
     }
 
+
+//Calender Helper methods
     public static Date getStartOfDay(Calendar cal) {
         Calendar clone = (Calendar) cal.clone();
         clone.set(Calendar.HOUR_OF_DAY, 0);
@@ -294,29 +297,6 @@ public class Backend {
         return getEndOfDay(clone);
     }
 
-    public interface ExpenseDataCallback {
-        void onSuccess(List<DocumentSnapshot> documents);
-        void onFailure(Exception e);
-    }
-    public static void loadCategorizedBudget(
-            String userId,
-            Timestamp startDate,
-            Timestamp endDate,
-            ExpenseDataCallback callback
-    ) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-        db.collection("users")
-                .document(userId)
-                .collection("category_budgets")
-                .whereGreaterThanOrEqualTo("startDate", startDate)
-                .whereLessThanOrEqualTo("endDate", endDate)
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    callback.onSuccess(queryDocumentSnapshots.getDocuments());
-                })
-                .addOnFailureListener(callback::onFailure);
-    }
 
 
     //BudgetFragment Related Methods
@@ -415,6 +395,7 @@ public class Backend {
                 .addOnFailureListener(onFailure);
     }
 
+    //Saving goals related Methods
 
 
 }

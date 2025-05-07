@@ -40,6 +40,7 @@ public class AddFragment extends Fragment {
 
     private FirebaseFirestore db;
     private FirebaseAuth auth;
+    String userId;
     NavController navController;
 
     Backend helper;
@@ -77,6 +78,7 @@ public class AddFragment extends Fragment {
 
         db = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
+        userId = auth.getCurrentUser().getUid();
         binding.edtDate.setOnClickListener(v -> {
             helper.showDatePicker(binding.edtDate);
         });
@@ -129,16 +131,6 @@ public class AddFragment extends Fragment {
         return binding.getRoot();
     }
 
-    private void setupDatePicker() {
-        binding.edtDate.setOnClickListener(v -> {
-            Calendar calendar = Calendar.getInstance();
-            new DatePickerDialog(requireContext(), (view, year, month, dayOfMonth) -> {
-                String date = dayOfMonth + "/" + (month + 1) + "/" + year;
-                binding.edtDate.setText(date);
-            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
-        });
-    }
-
     private void saveExpenseToFirestore() {
         String amountStr = binding.edtAmount.getText().toString().trim();
         String date = binding.edtDate.getText().toString().trim();
@@ -153,15 +145,16 @@ public class AddFragment extends Fragment {
         }
 
         double amount = Double.parseDouble(amountStr);
+        String expenseId = db.collection("users").document(userId).collection("expenses").document().getId();
 
         ExpenseModel expense;
         if (description.isEmpty()) {
-            expense = new ExpenseModel(categoryModel, amount, date, account, isIncome);
+            expense = new ExpenseModel(expenseId, categoryModel, amount, date, account, isIncome);
         } else {
-            expense = new ExpenseModel(categoryModel, amount, description, date, account, isIncome);
+            expense = new ExpenseModel(expenseId, categoryModel, amount, description, date, account, isIncome);
         }
 
-        helper.addExpense(expense, documentReference -> {
+        helper.addExpense(expense, Unused -> {
             Toast.makeText(getContext(), "Expense Added", Toast.LENGTH_SHORT).show();
             navController.navigate(R.id.homeFragment);
         }, e -> {
