@@ -20,10 +20,29 @@
             android:layout_height="0dp"
             android:padding="8dp"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/messageBarLayout"
+            app:layout_constraintBottom_toTopOf="@+id/suggestionScroll"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:clipToPadding="false" />
+
+        <HorizontalScrollView
+            android:id="@+id/suggestionScroll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:fillViewport="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/messageBarLayout"
+            app:layout_constraintTop_toBottomOf="@+id/chatRecyclerView">
+
+            <LinearLayout
+                android:id="@+id/suggestionLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" />
+        </HorizontalScrollView>
+
 
         <!-- Message input bar -->
         <androidx.constraintlayout.widget.ConstraintLayout

@@ -28,25 +28,34 @@ public class GeminiHelper {
         this.apiKey = apiKey;
     }
 
-    public void sendPersonalizedMessage(String userMessage, FinancialData financialData, Map<String, Double> categorizedExpenses, GeminiCallback callback) {
-        StringBuilder promptBuilder = new StringBuilder();
 
-        promptBuilder.append("User Message: ").append(userMessage).append("\n\n");
+    public String generateContextPrompt(FinancialData financialData, Map<String, Double> categorizedExpenses) {
+        StringBuilder context = new StringBuilder();
 
-        promptBuilder.append("Here's the user's financial summary:\n");
-        promptBuilder.append("- Total Income: ₹").append(financialData.getTotalIncome()).append("\n");
-        promptBuilder.append("- Total Expenses: ₹").append(financialData.getTotalExpense()).append("\n\n");
+        context.append("Here is the user's current financial summary:\n");
+        context.append("Total Income: ₹").append(financialData.getTotalIncome()).append("\n");
+        context.append("Total Expenses: ₹").append(financialData.getTotalExpense()).append("\n\n");
 
-        promptBuilder.append("Breakdown of expenses and income by category:\n");
+        context.append("Spending by Category:\n");
         for (Map.Entry<String, Double> entry : categorizedExpenses.entrySet()) {
-            promptBuilder.append("- ").append(entry.getKey()).append(": ₹").append(entry.getValue()).append("\n");
+            context.append("- ").append(entry.getKey()).append(": ₹").append(entry.getValue()).append("\n");
         }
 
-        promptBuilder.append("\nPlease provide personalized financial advice based on this data. Suggest how the user can save better or invest wisely. Keep the language simple and friendly.");
+        context.append("\nBased on this data, suggest personalized financial advice or improvements. ");
 
-        // Send prompt to existing method
-        sendMessage(promptBuilder.toString(), callback);
+        return context.toString();
     }
+
+    public void sendPersonalizedMessage(String userMessage, FinancialData financialData,
+                                        Map<String, Double> categorizedExpenses, GeminiCallback callback) {
+
+        String contextPrompt = generateContextPrompt(financialData, categorizedExpenses);
+
+        String fullPrompt = contextPrompt + "\n\nUser asked: \"" + userMessage + "\"";
+
+        sendMessage(fullPrompt, callback);
+    }
+
 
 
     public void sendMessage(String userPrompt, GeminiCallback callback) {
