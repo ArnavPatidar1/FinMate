@@ -9,7 +9,7 @@
     <item android:id="@android:id/progress">
         <clip>
             <shape android:shape="rectangle">
-                <corners android:radius="@dimen/_10sdp"/>
+                <corners android:radius="@dimen/_12sdp"/>
                 <solid android:color="@color/slider_color" />
             </shape>
         </clip>

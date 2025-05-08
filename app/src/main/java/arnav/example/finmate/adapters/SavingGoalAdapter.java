@@ -1,0 +1,100 @@
+package arnav.example.finmate.adapters;
+
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
+
+import arnav.example.finmate.R;
+import arnav.example.finmate.databinding.DisplaySavingGoalsBinding;
+import arnav.example.finmate.helper.Backend;
+import arnav.example.finmate.model.CategoryModel;
+import arnav.example.finmate.model.SavingGoalModel;
+
+public class SavingGoalAdapter extends RecyclerView.Adapter<SavingGoalAdapter.SavingGoalViewHolder> {
+    private Context context;
+    private ArrayList<SavingGoalModel> goals;
+    private String userId;
+    private FirebaseFirestore db;
+
+    public SavingGoalAdapter(Context context, ArrayList<SavingGoalModel> goals, FirebaseFirestore db, String userId) {
+        this.context = context;
+        this.goals = goals;
+        this.db = db;
+        this.userId = userId;
+    }
+
+    @NonNull
+    @Override
+    public SavingGoalViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new SavingGoalViewHolder(LayoutInflater.from(context).inflate(R.layout.display_saving_goals, parent, false));
+    }
+
+    @SuppressLint("SetTextI18n")
+    @Override
+    public void onBindViewHolder(@NonNull SavingGoalViewHolder holder, int position) {
+        SavingGoalModel goalModel = goals.get(position);
+        CategoryModel category = goalModel.getCategoryModel();
+        int iconResId = Backend.getIconResId(category.getIconName());
+        holder.binding.imgCategory.setImageResource(iconResId);
+        holder.binding.imgCategory.setBackgroundTintList(Backend.getColorStateList(context, category.getCategoryColor()));
+        holder.binding.txtGoalAmount.setText("₹" + goalModel.getTargetAmount());
+        holder.binding.txtSavedAmount.setText("₹" + goalModel.getSavedAmount());
+        holder.binding.txtRemainingAmount.setText("₹" + goalModel.getRemainingAmount());
+        if (goalModel.getDescription() == null) {
+            holder.binding.txtCategoryName.setText(category.getName());
+        } else {
+            holder.binding.txtCategoryName.setText(goalModel.getDescription());
+        }
+
+        int percentUsed = goalModel.getTargetAmount() > 0
+                ? (int) ((goalModel.getSavedAmount() / goalModel.getTargetAmount()) * 100 )
+                : 0;
+        if (percentUsed > 100) percentUsed = 100;
+        holder.binding.progressBar.setProgress(percentUsed);
+
+        holder.itemView.setOnLongClickListener(v -> {
+            new AlertDialog.Builder(context)
+                    .setTitle("Delete Goal")
+                    .setMessage("Are you sure you want to delete this saving goal?")
+                    .setPositiveButton("Yes", (dialog, which) -> {
+                        Backend.deleteSavingGoal(db, userId, goalModel.getSavingGoalId(),
+                                aVoid -> {
+                                    goals.remove(position);
+                                    notifyItemRemoved(position);
+                                    Toast.makeText(context, "Goal deleted", Toast.LENGTH_SHORT).show();
+                                },
+                                e -> Toast.makeText(context, "Failed to delete goal", Toast.LENGTH_SHORT).show()
+                        );
+                    })
+                    .setNegativeButton("No", null)
+                    .show();
+            return true;
+        });
+
+    }
+
+    @Override
+    public int getItemCount() {
+        return goals.size();
+    }
+
+    public class SavingGoalViewHolder extends RecyclerView.ViewHolder {
+        DisplaySavingGoalsBinding binding;
+        public SavingGoalViewHolder(@NonNull View itemView) {
+            super(itemView);
+            binding = DisplaySavingGoalsBinding.bind(itemView);
+        }
+    }
+}

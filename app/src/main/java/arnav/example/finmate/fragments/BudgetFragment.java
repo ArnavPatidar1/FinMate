@@ -191,6 +191,7 @@ public class BudgetFragment extends Fragment {
                         queryDocumentSnapshots) {
                     int i = 1;
                     CategoryBudgetModel model = documentSnapshot.toObject(CategoryBudgetModel.class);
+                    Backend.getCategorizedSpent(db, userId, monthStart, monthEnd, model.getCategory(), model::setCategorySpent, e -> {});
                     categoryList.add(model);
                     String TAG = "Category wise Budget" + i;
                     String message = "Category: " + model.getCategory().getName() + ", BudgetAmount: " + model.getCategoryBudget() + ", SpentAmount: " + model.getCategorySpent() + ", startDate: " + model.getStartDate().toString() + ", endDate: " + model.getEndDate().toString();

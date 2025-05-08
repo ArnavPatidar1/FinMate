@@ -4,12 +4,10 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.util.Log;
-import android.widget.EditText;
 
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.core.content.ContextCompat;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
@@ -28,15 +26,16 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 import arnav.example.finmate.R;
 import arnav.example.finmate.model.CategoryBudgetModel;
 import arnav.example.finmate.model.CategoryModel;
 import arnav.example.finmate.model.ExpenseModel;
 import arnav.example.finmate.model.MonthlyBudgetModel;
+import arnav.example.finmate.model.SavingGoalModel;
 
 public class Backend {
 
@@ -46,6 +45,7 @@ public class Backend {
     private final Context context;
     private final Calendar calendar;
     public static ArrayList<CategoryModel> categories = new ArrayList<>();
+    public static ArrayList<CategoryModel> goalsCategories = new ArrayList<>();
     private static final Map<String, Integer> iconMap = new HashMap<>();
     private static final Map<String, Integer> colorMap = new HashMap<>();
 
@@ -65,38 +65,38 @@ public class Backend {
     public void addExpense(ExpenseModel expense, OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener) {
         expense.setTimestamp(Timestamp.now());
 
-        String docId = expense.getId();;
+        String docId = expense.getId();
+        ;
         expenseRef.document(docId)
                 .set(expense)
                 .addOnSuccessListener(onSuccessListener)
                 .addOnFailureListener(onFailureListener);
 
         db.runTransaction(transaction -> {
-            DocumentSnapshot documentSnapshot = transaction.get(db.collection("users").document(user.getUid()));
-            double currentExpense = 0;
-            double currentIncome = 0;
+                    Timestamp monthStart = new Timestamp(Backend.getStartOfMonth((Calendar) calendar.clone()));
+                    Timestamp monthEnd = new Timestamp(Backend.getEndOfMonth((Calendar) calendar.clone()));
+                    db.collection("users").document(user.getUid()).collection("category_budgets")
+                            .whereGreaterThanOrEqualTo("startDate", monthStart)
+                            .whereLessThanOrEqualTo("endDate", monthEnd)
+                            .get()
+                            .addOnSuccessListener(queryDocumentSnapshots -> {
+                                if (!queryDocumentSnapshots.isEmpty()) {
+                                    for (DocumentSnapshot documentSnapshot :
+                                            queryDocumentSnapshots) {
+                                        CategoryBudgetModel categoryBudgetModel = documentSnapshot.toObject(CategoryBudgetModel.class);
+                                        if (categoryBudgetModel.getCategory().getName().equals(expense.getCategory().getName())) {
+                                            double newSpentAmount = categoryBudgetModel.getCategorySpent() + expense.getAmount();
+                                            categoryBudgetModel.setCategorySpent(newSpentAmount);
+                                            saveOrUpdateCategoryBudget(db, user.getUid(), categoryBudgetModel, aVoid -> {}, e -> {});
+                                        }
+                                    }
+                                }
+                            })
+                            .addOnFailureListener(e -> {});
 
-            if (expense.isIncome()) {
-                if (documentSnapshot.contains("totalIncome")) {
-                    currentIncome = documentSnapshot.getDouble("totalIncome");
-                    double updatedIncome = currentIncome + expense.getAmount();
-                    transaction.update(db.collection("users").document(user.getUid()), "totalIncome", updatedIncome);
-                }
-
-            } else {
-                if (documentSnapshot.contains("totalExpense")) {
-                    currentExpense = documentSnapshot.getDouble("totalExpense");
-                    double updatedTotal = currentExpense + expense.getAmount();
-                    transaction.update(db.collection("users").document(user.getUid()), "totalExpense", updatedTotal);
-                }
-
-            }
-            return null;
-        }).addOnSuccessListener(aVoid -> {
-            Log.d("Firestore", "Total expense updated");
-        }).addOnFailureListener(e -> {
-            Log.e("Firestore", "Failed to update total expense", e);
-        });
+                    return null;
+        }).addOnSuccessListener(aVoid -> {})
+                .addOnFailureListener(e -> {});
     }
 
 
@@ -186,6 +186,12 @@ public class Backend {
         iconMap.put("investment_icon", R.drawable.investment_icon);
         iconMap.put("loan_icon", R.drawable.loan_icon);
         iconMap.put("travel_icon", R.drawable.travel_icon);
+        iconMap.put("travel_icon2", R.drawable.travel_icon2);
+        iconMap.put("car_icon", R.drawable.car_icon);
+        iconMap.put("bike_icon", R.drawable.bike_icon);
+        iconMap.put("education_icon2", R.drawable.education_icon2);
+        iconMap.put("emergency_fund_icon", R.drawable.emergency_fund_icon);
+        iconMap.put("house_icon", R.drawable.house_icon);
         iconMap.put("other_icon", R.drawable.other_icon);
         // Add all other mappings here
     }
@@ -209,6 +215,17 @@ public class Backend {
         categories.add(new CategoryModel("Others", "other_icon", "category10"));
     }
 
+    public static void setGoalsCategories() {
+        goalsCategories.clear();
+        goalsCategories.add(new CategoryModel("Travel & Vacation", "travel_icon2", "default"));
+        goalsCategories.add(new CategoryModel("Home Purchase", "house_icon", "default"));
+        goalsCategories.add(new CategoryModel("Buying a Car", "car_icon", "default"));
+        goalsCategories.add(new CategoryModel("Buying a Bike", "bike_icon", "default"));
+        goalsCategories.add(new CategoryModel("Education", "education_icon2", "default"));
+        goalsCategories.add(new CategoryModel("Emergency Fund", "emergency_fund_icon", "default"));
+        goalsCategories.add(new CategoryModel("Other", "other_icon", "default"));
+    }
+
     static {
         colorMap.put("category1", R.color.category1);
         colorMap.put("category2", R.color.category2);
@@ -220,6 +237,7 @@ public class Backend {
         colorMap.put("category8", R.color.category8);
         colorMap.put("category9", R.color.category9);
         colorMap.put("category10", R.color.category10);
+        colorMap.put("default", R.color.white);
         // Add all color mappings
     }
 
@@ -253,7 +271,7 @@ public class Backend {
     }
 
 
-//Calender Helper methods
+    //Calender Helper methods
     public static Date getStartOfDay(Calendar cal) {
         Calendar clone = (Calendar) cal.clone();
         clone.set(Calendar.HOUR_OF_DAY, 0);
@@ -296,7 +314,6 @@ public class Backend {
         clone.set(Calendar.DAY_OF_MONTH, clone.getActualMaximum(Calendar.DAY_OF_MONTH));
         return getEndOfDay(clone);
     }
-
 
 
     //BudgetFragment Related Methods
@@ -397,6 +414,69 @@ public class Backend {
 
     //Saving goals related Methods
 
+//    public static void addSavingGoal(FirebaseFirestore db, String userId, SavingGoalModel model, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
+//
+//        db.collection("users").document(userId).collection("saving_goals")
+//                .add(model)
+//                .addOnSuccessListener(documentReference -> {
+//                    String generatedId = documentReference.getId();
+//                    model.setSavingGoalId(generatedId);
+//
+//                    documentReference.update("savingGoalId", generatedId)
+//                            .addOnSuccessListener(onSuccess)
+//                            .addOnFailureListener(onFailure);
+//                })
+//                .addOnFailureListener(onFailure);
+//
+//    }
+
+    public static void addSavingGoal(FirebaseFirestore db, String userId, SavingGoalModel model,
+                                     OnSuccessListener<Object> onSuccess, OnFailureListener onFailure) {
+
+        DocumentReference userRef = db.collection("users").document(userId);
+        DocumentReference goalRef = db.collection("users").document(userId)
+                .collection("saving_goals").document(); // pre-generate ID
+
+        db.runTransaction(transaction -> {
+                    // Read current totalIncome
+                    DocumentSnapshot userSnapshot = transaction.get(userRef);
+                    Double currentIncome = userSnapshot.getDouble("totalIncome");
+                    if (currentIncome == null) currentIncome = 0.0;
+
+                    // Deduct saved amount from total income
+                    double updatedIncome = currentIncome - model.getSavedAmount();
+                    transaction.update(userRef, "totalIncome", updatedIncome);
+
+                    // Set the generated ID in the model
+                    model.setSavingGoalId(goalRef.getId());
+
+                    // Save the goal model in 'saving_goals'
+                    transaction.set(goalRef, model);
+
+                    return null;
+                }).addOnSuccessListener(onSuccess)
+                .addOnFailureListener(onFailure);
+    }
+
+
+    public static void getSavingGoals(FirebaseFirestore db, String userId, OnSuccessListener<QuerySnapshot> onSuccess, OnFailureListener onFailure) {
+        db.collection("users").document(userId).collection("saving_goals")
+                .get()
+                .addOnSuccessListener(onSuccess)
+                .addOnFailureListener(onFailure);
+    }
+
+
+    public static void deleteSavingGoal(FirebaseFirestore db, String userId, String savingGoalId,
+                                        OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
+        db.collection("users")
+                .document(userId)
+                .collection("saving_goals")
+                .document(savingGoalId)
+                .delete()
+                .addOnSuccessListener(onSuccess)
+                .addOnFailureListener(onFailure);
+    }
 
 }
 

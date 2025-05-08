@@ -57,6 +57,8 @@
     <string name="set_amount">Set amount</string>
     <string name="add_category">Add Category</string>
     <string name="set_budget">Set Budget</string>
+    <string name="add_saving_goals">Add Saving Goals</string>
+    <string name="enter_first_saving">Enter First Saving</string>
 
     <string-array name="filter_range">
         <item>Monthly</item>
