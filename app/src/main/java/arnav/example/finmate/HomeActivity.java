@@ -36,6 +36,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import arnav.example.finmate.databinding.DrawerHeaderBinding;
+
 public class HomeActivity extends AppCompatActivity {
     BottomNavigationView navBar;
     MaterialToolbar toolbar;
@@ -159,6 +161,8 @@ public class HomeActivity extends AppCompatActivity {
                 }
             }
 
+
+
             /*Dynamically changing toolbar title based on fragment change*/
             if (destination.getId() == R.id.homeFragment) {
                 db.collection("users").document(uid)
@@ -218,12 +222,32 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+        View headerView = nav_drawer.getHeaderView(0); // Get the actual header view
+        DrawerHeaderBinding drawerHeaderBinding = DrawerHeaderBinding.bind(headerView);
+        db.collection("users").document(uid)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String[] name = documentSnapshot.getString("name").split(" ");
+                        // Set the username in the drawer header
+                        drawerHeaderBinding.drawerUserName.setText(name[0] + " " + name[1]); // Update the TextView in the drawer
+                        Log.d("Username", "User name: " + name[0]);
+                    } else {
+                        Log.d("Username", "No such document");
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Username", "Failed to fetch user name", e);
+                });
+
+
 
 
         //Back Press Handling
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
+                hideSystemUI();
                 if (drawerLayout.isDrawerOpen(GravityCompat.END)) {
                     drawerLayout.closeDrawer(GravityCompat.END);
                 } else if (!navController.popBackStack()) {

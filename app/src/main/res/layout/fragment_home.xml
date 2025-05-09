@@ -65,7 +65,7 @@
                     android:layout_marginStart="@dimen/_10sdp"
                     android:layout_marginEnd="@dimen/_10sdp"
                     android:max="100"
-                    android:progress="50" />
+                    android:progress="33" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -88,7 +88,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/_170sdp"
                         android:layout_marginBottom="@dimen/_10sdp"
-                        android:text="₹20000"
+                        android:text="₹30000"
                         android:textColor="@color/white"
                         android:textSize="@dimen/_11ssp" />
 

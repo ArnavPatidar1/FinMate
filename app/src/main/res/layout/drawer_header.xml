@@ -42,7 +42,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/user_name"
+        android:id="@+id/drawer_user_name"
         android:text="@string/user_hint"
         android:textColor="@color/white"
         android:textStyle="bold"

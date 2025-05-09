@@ -15,7 +15,11 @@ public class GeminiHelper {
 
     private static final String BASE_URL = "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-pro:generateContent";
 
-    private final OkHttpClient client = new OkHttpClient();
+    private final OkHttpClient client = new OkHttpClient.Builder()
+            .connectTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+            .readTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+            .writeTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+            .build();
     private final Gson gson = new Gson();
     private final String apiKey;
 
@@ -41,7 +45,7 @@ public class GeminiHelper {
             context.append("- ").append(entry.getKey()).append(": ₹").append(entry.getValue()).append("\n");
         }
 
-        context.append("\nBased on this data, suggest personalized financial advice or improvements. ");
+        context.append("\nUse this data if needed. And give reply in points and don't give expense and other breakdowns if user didn't ask.");
 
         return context.toString();
     }
