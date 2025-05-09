@@ -1,12 +1,16 @@
 package arnav.example.finmate.adapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
@@ -20,10 +24,15 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseV
 
     private ArrayList<ExpenseModel> expenses;
     private Context context;
+    private FirebaseFirestore db;
+    private String userId;
 
-    public ExpenseAdapter(Context context, ArrayList<ExpenseModel> expenses) {
+
+    public ExpenseAdapter(Context context, ArrayList<ExpenseModel> expenses, FirebaseFirestore db, String userId) {
         this.expenses = expenses;
         this.context = context;
+        this.db = db;
+        this.userId = userId;
     }
 
     @NonNull
@@ -49,6 +58,26 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseV
         } else {
             holder.binding.rowAmount.setTextColor(context.getColor(R.color.red));
         }
+
+        holder.binding.transactionRow.setOnLongClickListener(v -> {
+
+            new AlertDialog.Builder(context)
+                    .setTitle("Delete Goal")
+                    .setMessage("Are you sure you want to delete this saving goal?")
+                    .setPositiveButton("Yes", (dialog, which) -> {
+                        Backend.deleteExpense(db, userId, expense.getId(),
+                                aVoid -> {
+                                    expenses.remove(position);
+                                    notifyItemRemoved(position);
+                                    Toast.makeText(context, "Goal deleted", Toast.LENGTH_SHORT).show();
+                                },
+                                e -> Toast.makeText(context, "Failed to delete goal", Toast.LENGTH_SHORT).show()
+                        );
+                    })
+                    .setNegativeButton("No", null)
+                    .show();
+            return true;
+        });
 
     }
 

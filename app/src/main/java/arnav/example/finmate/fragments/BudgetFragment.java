@@ -42,7 +42,7 @@ public class BudgetFragment extends Fragment {
     private FirebaseFirestore db;
     private FirebaseAuth auth;
     private String userId;
-    private double monthlyBudgetAmount = 0.0;
+    private double monthlyBudgetAmount = 0.0, monthlySpent = 0.0;
     private Date startDate, endDate;
     private Calendar calendar;
 
@@ -114,7 +114,10 @@ public class BudgetFragment extends Fragment {
                     }
                 } else {
                     String budgetId = db.collection("users").document(userId).collection("monthly_budget").document().getId();
-                    MonthlyBudgetModel model = new MonthlyBudgetModel( monthlyBudgetAmount, monthStart, monthEnd);
+                    Backend.getAllMonthlyExpenses(db, userId, monthStart, monthEnd, aDouble -> {
+                        monthlySpent = aDouble;
+                    }, e -> {});
+                    MonthlyBudgetModel model = new MonthlyBudgetModel( monthlyBudgetAmount, monthlySpent, monthStart, monthEnd);
                     Backend.addNewMonthlyBudget(db, userId, model, v2 -> {
                         Toast.makeText(getContext(), "Monthly Budget Setup Completed", Toast.LENGTH_SHORT).show();
                         saveCategoryBudgets(monthStart, monthEnd);

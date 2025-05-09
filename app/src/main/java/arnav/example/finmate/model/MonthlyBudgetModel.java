@@ -23,11 +23,13 @@ public class MonthlyBudgetModel {
     private double budgetAmount;
     private Timestamp startDate;
     private Timestamp endDate;
+    private double monthlySpent;
 
     public MonthlyBudgetModel() {}
 
-    public MonthlyBudgetModel(double budgetAmount, Timestamp startDate, Timestamp endDate) {
+    public MonthlyBudgetModel(double budgetAmount, double monthlySpent, Timestamp startDate, Timestamp endDate) {
         this.budgetAmount = budgetAmount;
+        this.monthlySpent = monthlySpent;
         this.startDate = startDate;
         this.endDate = endDate;
     }
@@ -54,5 +56,13 @@ public class MonthlyBudgetModel {
 
     public void setEndDate(Timestamp endDate) {
         this.endDate = endDate;
+    }
+
+    public double getMonthlySpent() {
+        return monthlySpent;
+    }
+
+    public void setMonthlySpent(double monthlySpent) {
+        this.monthlySpent = monthlySpent;
     }
 }

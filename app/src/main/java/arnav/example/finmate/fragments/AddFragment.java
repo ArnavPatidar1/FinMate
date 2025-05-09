@@ -154,7 +154,7 @@ public class AddFragment extends Fragment {
             expense = new ExpenseModel(expenseId, categoryModel, amount, description, date, account, isIncome);
         }
 
-        helper.addExpense(expense, Unused -> {
+        helper.addExpense(db, userId, expense, Unused -> {
             Toast.makeText(getContext(), "Expense Added", Toast.LENGTH_SHORT).show();
             navController.navigate(R.id.homeFragment);
         }, e -> {

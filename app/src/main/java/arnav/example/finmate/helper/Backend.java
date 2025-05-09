@@ -48,6 +48,9 @@ public class Backend {
     public static ArrayList<CategoryModel> goalsCategories = new ArrayList<>();
     private static final Map<String, Integer> iconMap = new HashMap<>();
     private static final Map<String, Integer> colorMap = new HashMap<>();
+    private Timestamp monthStart;
+    private Timestamp monthEnd;
+
 
 
     public Backend(Context context) {
@@ -58,63 +61,124 @@ public class Backend {
         if (user == null) {
             throw new IllegalStateException("User not logged in");
         }
+         monthStart = new Timestamp(Backend.getStartOfMonth((Calendar) calendar.clone()));
+         monthEnd = new Timestamp(Backend.getEndOfMonth((Calendar) calendar.clone()));
 
         expenseRef = db.collection("users").document(user.getUid()).collection("expenses");
     }
 
-    public void addExpense(ExpenseModel expense, OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener) {
+    public void addExpense(FirebaseFirestore db, String userId, ExpenseModel expense, OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener) {
         expense.setTimestamp(Timestamp.now());
 
         String docId = expense.getId();
-        ;
-        expenseRef.document(docId)
+        db.collection("users").document(userId).collection("expenses").document(docId)
                 .set(expense)
                 .addOnSuccessListener(onSuccessListener)
                 .addOnFailureListener(onFailureListener);
 
         db.runTransaction(transaction -> {
-                    Timestamp monthStart = new Timestamp(Backend.getStartOfMonth((Calendar) calendar.clone()));
-                    Timestamp monthEnd = new Timestamp(Backend.getEndOfMonth((Calendar) calendar.clone()));
-                    db.collection("users").document(user.getUid()).collection("category_budgets")
-                            .whereGreaterThanOrEqualTo("startDate", monthStart)
-                            .whereLessThanOrEqualTo("endDate", monthEnd)
-                            .get()
-                            .addOnSuccessListener(queryDocumentSnapshots -> {
-                                if (!queryDocumentSnapshots.isEmpty()) {
-                                    for (DocumentSnapshot documentSnapshot :
-                                            queryDocumentSnapshots) {
-                                        CategoryBudgetModel categoryBudgetModel = documentSnapshot.toObject(CategoryBudgetModel.class);
-                                        if (categoryBudgetModel.getCategory().getName().equals(expense.getCategory().getName())) {
-                                            double newSpentAmount = categoryBudgetModel.getCategorySpent() + expense.getAmount();
-                                            categoryBudgetModel.setCategorySpent(newSpentAmount);
-                                            saveOrUpdateCategoryBudget(db, user.getUid(), categoryBudgetModel, aVoid -> {}, e -> {});
+                    if (!expense.isIncome()){
+                        db.collection("users").document(user.getUid()).collection("category_budgets")
+                                .whereGreaterThanOrEqualTo("startDate", monthStart)
+                                .whereLessThanOrEqualTo("endDate", monthEnd)
+                                .get()
+                                .addOnSuccessListener(queryDocumentSnapshots -> {
+                                    if (!queryDocumentSnapshots.isEmpty()) {
+                                        for (DocumentSnapshot documentSnapshot :
+                                                queryDocumentSnapshots) {
+                                            CategoryBudgetModel categoryBudgetModel = documentSnapshot.toObject(CategoryBudgetModel.class);
+                                            if (categoryBudgetModel.getCategory().getName().equals(expense.getCategory().getName())) {
+                                                double newSpentAmount = categoryBudgetModel.getCategorySpent() + expense.getAmount();
+                                                categoryBudgetModel.setCategorySpent(newSpentAmount);
+                                                saveOrUpdateCategoryBudget(db, user.getUid(), categoryBudgetModel, aVoid -> {
+                                                }, e -> {
+                                                });
+                                            }
                                         }
                                     }
-                                }
-                            })
-                            .addOnFailureListener(e -> {});
+                                })
+                                .addOnFailureListener(e -> {
+                                });
+                    }
 
                     return null;
         }).addOnSuccessListener(aVoid -> {})
                 .addOnFailureListener(e -> {});
+
+        db.runTransaction(transaction -> {
+                    if (!expense.isIncome()){
+                        db.collection("users").document(user.getUid()).collection("monthly_budget")
+                                .whereGreaterThanOrEqualTo("startDate", monthStart)
+                                .whereLessThanOrEqualTo("endDate", monthEnd)
+                                .get()
+                                .addOnSuccessListener(queryDocumentSnapshots -> {
+                                    if (!queryDocumentSnapshots.isEmpty()) {
+                                        for (DocumentSnapshot documentSnapshot :
+                                                queryDocumentSnapshots) {
+                                            MonthlyBudgetModel monthlyBudgetModel = documentSnapshot.toObject(MonthlyBudgetModel.class);
+                                            double updatedSpent = monthlyBudgetModel.getMonthlySpent() + expense.getAmount();
+                                            monthlyBudgetModel.setMonthlySpent(updatedSpent);
+                                            DocumentReference docRef = documentSnapshot.getReference();
+                                            documentSnapshot.getReference().set(monthlyBudgetModel);
+                                        }
+                                    }
+                                })
+                                .addOnFailureListener(e -> {
+                                });
+                    }
+            return null;
+        }).addOnSuccessListener(command -> {})
+                .addOnFailureListener(e -> {});
+
+        db.runTransaction(transaction -> {
+
+
+            return null;
+        }).addOnSuccessListener(command -> {})
+                .addOnFailureListener(e -> {});
+    }
+
+    public static void getAllMonthlyIncome(FirebaseFirestore db, String userId, Timestamp monthStart, Timestamp monthEnd, OnSuccessListener<Double> onSuccessListener, OnFailureListener onFailureListener) {
+        db.collection("users").document(userId).collection("expenses")
+                .whereGreaterThanOrEqualTo("timestamp", monthStart)
+                .whereLessThanOrEqualTo("timestamp", monthEnd)
+                .whereEqualTo("income", true)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    double totalMonthlyIncome =0 ;
+                    for (DocumentSnapshot document :
+                            queryDocumentSnapshots) {
+                        ExpenseModel expense = document.toObject(ExpenseModel.class);
+                        totalMonthlyIncome += expense.getAmount();
+                    }
+                    onSuccessListener.onSuccess(totalMonthlyIncome);
+                })
+                .addOnFailureListener(onFailureListener);
+    }
+
+    public static void setTotalMonthlyBalance(FirebaseFirestore db, String userId, double amount) {
+        db.collection("users").document(userId).update("totalMonthlyBalance", amount)
+                .addOnSuccessListener(unused -> {})
+                .addOnFailureListener(e -> {});
     }
 
 
-    public ArrayList<ExpenseModel> getAllExpenses(OnSuccessListener<DocumentReference> onSuccessListener, OnFailureListener onFailureListener) {
-        ArrayList<ExpenseModel> expenseList = new ArrayList<>();
-        expenseRef.get()
+    public static void getAllMonthlyExpenses(FirebaseFirestore db, String userId, Timestamp monthStart, Timestamp monthEnd, OnSuccessListener<Double> onSuccessListener, OnFailureListener onFailureListener) {
+        db.collection("users").document(userId).collection("expenses")
+                .whereGreaterThanOrEqualTo("timestamp", monthStart)
+                .whereLessThanOrEqualTo("timestamp", monthEnd)
+                .whereEqualTo("income", false)
+                .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    for (DocumentSnapshot document : queryDocumentSnapshots) {
+                    double totalMonthlySpent =0 ;
+                    for (DocumentSnapshot document :
+                            queryDocumentSnapshots) {
                         ExpenseModel expense = document.toObject(ExpenseModel.class);
-                        if (expense != null) {
-                            expense.setId(document.getId()); // Add the ID manually
-                            expenseList.add(expense);
-                        }
+                        totalMonthlySpent += expense.getAmount();
                     }
-
+                    onSuccessListener.onSuccess(totalMonthlySpent);
                 })
                 .addOnFailureListener(onFailureListener);
-        return expenseList;
     }
 
     public void updateExpense(String documentId, ExpenseModel updatedExpense, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
@@ -124,8 +188,9 @@ public class Backend {
                 .addOnFailureListener(onFailure);
     }
 
-    public void deleteExpense(String documentId, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
-        expenseRef.document(documentId)
+    public static void deleteExpense(FirebaseFirestore db, String userId, String expenseID, OnSuccessListener<Void> onSuccess, OnFailureListener onFailure) {
+        db.collection("users").document(userId).collection("expenses")
+                .document(expenseID)
                 .delete()
                 .addOnSuccessListener(onSuccess)
                 .addOnFailureListener(onFailure);

@@ -159,7 +159,7 @@ public class SavingGoalAdapter extends RecyclerView.Adapter<SavingGoalAdapter.Sa
         });
 
 
-        holder.itemView.setOnLongClickListener(v ->
+        holder.binding.goalRow.setOnLongClickListener(v ->
 
         {
             new AlertDialog.Builder(context)
