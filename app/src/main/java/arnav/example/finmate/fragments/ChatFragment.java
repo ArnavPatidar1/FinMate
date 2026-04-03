@@ -82,7 +82,7 @@ public class ChatFragment extends Fragment {
         });
 
         // Initialize helpers
-        geminiHelper = new GeminiHelper("AIzaSyA_OWMvVy2hMgZW2wU_jBgNAH0YSY0zzRs");
+        geminiHelper = new GeminiHelper("Your API Key here");
         firebaseHelper = new FirebaseHelper();
 
         // Handle send button click

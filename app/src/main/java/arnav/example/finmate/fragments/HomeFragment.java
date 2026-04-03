@@ -98,29 +98,25 @@ public class HomeFragment extends Fragment {
             loadExpense();
         });
 
-
         auth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         userId = auth.getCurrentUser().getUid();
 
-
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-
                 loadExpense();
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-
             }
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-
             }
         });
+
         tabLayout.post(() -> tabLayout.getTabAt(0).select());
 
         Backend.getMonthlyBudgetForRange(db, userId, monthStart, monthEnd, queryDocumentSnapshots -> {

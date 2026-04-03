@@ -123,7 +123,7 @@ public class SavingGoalFragment extends Fragment {
                     Backend.addSavingGoal(db,userId,savingGoalModel,unused -> {
                         Toast.makeText(getContext(), "Saving Goal Sucessfully added", Toast.LENGTH_SHORT).show();
                     }, e -> {
-                        Toast.makeText(getContext(), "Failed to add Saving Goal", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getContext(), "Failed to add Saving Goal", Toast.LENGTH_SHORT).show();
                     });
                     savingGoals.add(savingGoalModel);
                     savingGoalAdapter.notifyItemInserted(savingGoals.size() - 1);
@@ -158,7 +158,7 @@ public class SavingGoalFragment extends Fragment {
                     savingGoals.add(model);
                 }
                 savingGoalAdapter.notifyDataSetChanged();
-                Toast.makeText(getContext(), "loading sucessful", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getContext(), "loading sucessful", Toast.LENGTH_SHORT).show();
             }
         }, e -> Toast.makeText(getContext(), "Failed to load saving goals", Toast.LENGTH_SHORT).show());
     }

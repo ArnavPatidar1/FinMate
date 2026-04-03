@@ -69,9 +69,9 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseV
                                 aVoid -> {
                                     expenses.remove(position);
                                     notifyItemRemoved(position);
-                                    Toast.makeText(context, "Goal deleted", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(context, "Transaction deleted", Toast.LENGTH_SHORT).show();
                                 },
-                                e -> Toast.makeText(context, "Failed to delete goal", Toast.LENGTH_SHORT).show()
+                                e -> Toast.makeText(context, "Failed to delete transaction", Toast.LENGTH_SHORT).show()
                         );
                     })
                     .setNegativeButton("No", null)

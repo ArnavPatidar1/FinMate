@@ -86,7 +86,7 @@ public class BudgetFragment extends Fragment {
                 }
             }
         }, e -> {
-            Toast.makeText(getContext(), "Failed to load Monthly Budget", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getContext(), "Failed to load Monthly Budget", Toast.LENGTH_SHORT).show();
         });
 
         loadCategorizedBudget(monthStart, monthEnd);
@@ -126,7 +126,7 @@ public class BudgetFragment extends Fragment {
                     });
                 }
             }, e -> {
-                Toast.makeText(getContext(), "Failed to check existing monthly budget", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getContext(), "Failed to check existing monthly budget", Toast.LENGTH_SHORT).show();
             });
 
 
@@ -202,7 +202,7 @@ public class BudgetFragment extends Fragment {
                     i++;
                 }
                 categoryBudgetAdapter.notifyDataSetChanged();
-                Toast.makeText(getContext(), "Loading of categorized budgets successful", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getContext(), "Loading of categorized budgets successful", Toast.LENGTH_SHORT).show();
             }
         }, e -> {
             Toast.makeText(getContext(), "Failed to load categorized budgets", Toast.LENGTH_SHORT).show();
